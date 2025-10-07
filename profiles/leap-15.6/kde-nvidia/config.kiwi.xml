@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<image schemaversion="7.4" name="geckoforge-leap156-gnome">
+<image schemaversion="7.4" name="geckoforge-leap156-kde">
   <description type="system">
     <author>Jay-Alexander Elliot</author>
-    <specification>Leap 15.6 GNOME live image with Snapper and NVIDIA repo preconfigured.</specification>
+    <specification>Leap 15.6 KDE Plasma live image with Snapper and NVIDIA repo preconfigured.</specification>
   </description>
 
   <preferences>
@@ -35,20 +35,36 @@
     <package>snapper</package>
     <package>btrfsprogs</package>
     <package>flatpak</package>
-    <package>gnome-shell</package>
-    <package>patterns-gnome-gnome</package>
-    <package>gnome-software</package>
+    <package>patterns-kde-kde_plasma</package>
+    <package>plasma5-desktop</package>
+    <package>plasma5-workspace</package>
+    <package>sddm</package>
+    <package>dolphin</package>
+    <package>konsole</package>
+    <package>kate</package>
+    <package>gwenview</package>
+    <package>okular</package>
+    <package>ark</package>
+    <package>spectacle</package>
+    <package>plasma-nm</package>
+    <package>plasma-pa</package>
+    <package>kscreen</package>
+    <package>powerdevil</package>
+    <package>kwalletmanager</package>
+    <package>bluedevil5</package>
     <package>bash-completion</package>
     <package>curl</package>
     <package>vim</package>
   </packages>
 
   <files>
-    <file name="/etc/zypp/repos.d/nvidia.repo" mode="0644">root/etc/zypp/repos.d/nvidia.repo</file>
-    <file name="/etc/snapper/configs/root" mode="0644">root/etc/snapper/configs/root</file>
     <file name="/usr/local/sbin/firstboot-nvidia.sh" mode="0755">scripts/firstboot-nvidia.sh</file>
     <file name="/usr/local/sbin/firstboot-nix.sh" mode="0755">scripts/firstboot-nix.sh</file>
     <file name="/etc/systemd/system/geckoforge-firstboot.service" mode="0644">root/etc/systemd/system/geckoforge-firstboot.service</file>
     <file name="/etc/systemd/system/geckoforge-nix.service" mode="0644">root/etc/systemd/system/geckoforge-nix.service</file>
+    <file name="/etc/systemd/system/multi-user.target.wants/geckoforge-firstboot.service" mode="0644">root/etc/systemd/system/multi-user.target.wants/geckoforge-firstboot.service</file>
+    <file name="/etc/systemd/system/multi-user.target.wants/geckoforge-nix.service" mode="0644">root/etc/systemd/system/multi-user.target.wants/geckoforge-nix.service</file>
+    <file name="/etc/zypp/repos.d/nvidia.repo" mode="0644">root/etc/zypp/repos.d/nvidia.repo</file>
+    <file name="/etc/snapper/configs/root" mode="0644">root/etc/snapper/configs/root</file>
   </files>
 </image>
