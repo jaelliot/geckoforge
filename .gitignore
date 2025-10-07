@@ -1,0 +1,7 @@
+/out/
+/work/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+obs/.osc/

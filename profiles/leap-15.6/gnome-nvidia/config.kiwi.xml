@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<image schemaversion="7.4" name="geckoforge-leap156-gnome">
+  <description type="system">
+    <author>Jay-Alexander Elliot</author>
+    <specification>Leap 15.6 GNOME live image with Snapper and NVIDIA repo preconfigured.</specification>
+  </description>
+
+  <preferences>
+    <type image="iso" primary="true" flags="overlay" hybrid="true"/>
+    <version>0.1.0</version>
+    <rpm-excludedocs>true</rpm-excludedocs>
+  </preferences>
+
+  <repository type="rpm-md"><source path="http://download.opensuse.org/distribution/leap/15.6/repo/oss/"/></repository>
+  <repository type="rpm-md"><source path="http://download.opensuse.org/distribution/leap/15.6/repo/non-oss/"/></repository>
+  <repository type="rpm-md"><source path="http://download.opensuse.org/update/leap/15.6/oss/"/></repository>
+  <repository type="rpm-md"><source path="http://download.opensuse.org/update/leap/15.6/non-oss/"/></repository>
+  <repository type="rpm-md"><source path="https://download.nvidia.com/opensuse/leap/15.6/"/></repository>
+
+  <packages type="bootstrap">
+    <package>aaa_base</package>
+    <package>filesystem</package>
+    <package>glibc</package>
+    <package>rpm</package>
+    <package>zypper</package>
+    <package>openSUSE-release</package>
+  </packages>
+
+  <packages type="image">
+    <package>kernel-default</package>
+    <package>dracut</package>
+    <package>NetworkManager</package>
+    <package>firewalld</package>
+    <package>apparmor-parser</package>
+    <package>snapper</package>
+    <package>btrfsprogs</package>
+    <package>flatpak</package>
+    <package>gnome-shell</package>
+    <package>patterns-gnome-gnome</package>
+    <package>gnome-software</package>
+    <package>bash-completion</package>
+    <package>vim</package>
+  </packages>
+
+  <files>
+    <file name="/etc/zypp/repos.d/nvidia.repo" mode="0644">root/etc/zypp/repos.d/nvidia.repo</file>
+    <file name="/etc/snapper/configs/root" mode="0644">root/etc/snapper/configs/root</file>
+    <file name="/usr/local/sbin/firstboot-nvidia.sh" mode="0755">scripts/firstboot-nvidia.sh</file>
+    <file name="/etc/systemd/system/geckoforge-firstboot.service" mode="0644">root/etc/systemd/system/geckoforge-firstboot.service</file>
+  </files>
+</image>

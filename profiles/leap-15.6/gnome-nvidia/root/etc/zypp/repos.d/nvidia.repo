@@ -1,0 +1,8 @@
+[nvidia]
+name=NVIDIA Graphics Drivers
+enabled=1
+autorefresh=1
+baseurl=https://download.nvidia.com/opensuse/leap/15.6/
+type=rpm-md
+gpgcheck=1
+gpgkey=https://download.nvidia.com/opensuse/GPGKEY

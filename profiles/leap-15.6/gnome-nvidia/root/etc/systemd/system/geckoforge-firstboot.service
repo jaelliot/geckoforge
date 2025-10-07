@@ -1,0 +1,12 @@
+[Unit]
+Description=Geckoforge first boot tasks (NVIDIA driver)
+ConditionFirstBoot=yes
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/firstboot-nvidia.sh
+
+[Install]
+WantedBy=multi-user.target
