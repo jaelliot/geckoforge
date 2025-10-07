@@ -39,6 +39,7 @@
     <package>patterns-gnome-gnome</package>
     <package>gnome-software</package>
     <package>bash-completion</package>
+    <package>curl</package>
     <package>vim</package>
   </packages>
 
@@ -46,6 +47,8 @@
     <file name="/etc/zypp/repos.d/nvidia.repo" mode="0644">root/etc/zypp/repos.d/nvidia.repo</file>
     <file name="/etc/snapper/configs/root" mode="0644">root/etc/snapper/configs/root</file>
     <file name="/usr/local/sbin/firstboot-nvidia.sh" mode="0755">scripts/firstboot-nvidia.sh</file>
+    <file name="/usr/local/sbin/firstboot-nix.sh" mode="0755">scripts/firstboot-nix.sh</file>
     <file name="/etc/systemd/system/geckoforge-firstboot.service" mode="0644">root/etc/systemd/system/geckoforge-firstboot.service</file>
+    <file name="/etc/systemd/system/geckoforge-nix.service" mode="0644">root/etc/systemd/system/geckoforge-nix.service</file>
   </files>
 </image>
