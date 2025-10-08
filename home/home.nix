@@ -1,6 +1,13 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./modules/development.nix
+    ./modules/desktop.nix
+    ./modules/cli.nix
+    ./modules/firefox.nix
+  ];
+
   home.username = "jay";
   home.homeDirectory = "/home/jay";
   home.stateVersion = "24.05";

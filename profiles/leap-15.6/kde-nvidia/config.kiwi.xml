@@ -66,5 +66,6 @@
     <file name="/etc/systemd/system/multi-user.target.wants/geckoforge-nix.service" mode="0644">root/etc/systemd/system/multi-user.target.wants/geckoforge-nix.service</file>
     <file name="/etc/zypp/repos.d/nvidia.repo" mode="0644">root/etc/zypp/repos.d/nvidia.repo</file>
     <file name="/etc/snapper/configs/root" mode="0644">root/etc/snapper/configs/root</file>
+    <file name="/etc/firefox/policies/policies.json" mode="0644">root/etc/firefox/policies/policies.json</file>
   </files>
 </image>
