@@ -5,3 +5,9 @@
 *.swp
 .DS_Store
 obs/.osc/
+
+# Docker artifacts
+docker-compose.override.yml
+.env
+.env.local
+*.log

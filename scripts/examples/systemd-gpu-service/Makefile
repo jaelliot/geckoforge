@@ -5,14 +5,27 @@ PORT ?= 11434
 .PHONY: create start stop status logs clean
 
 create:
-	podman create \
+	mkdir -p ~/.config/systemd/user
+	docker create \
 	  --name $(CONTAINER_NAME) \
-	  --device nvidia.com/gpu=all \
+	  --gpus all \
+	  --restart unless-stopped \
 	  -p $(PORT):$(PORT) \
 	  $(IMAGE)
-	podman generate systemd --new --name $(CONTAINER_NAME) --files \
-	  --restart-policy=always \
-	  > ~/.config/systemd/user/$(CONTAINER_NAME).service
+	cat > ~/.config/systemd/user/$(CONTAINER_NAME).service <<EOF
+[Unit]
+Description=Docker container $(CONTAINER_NAME)
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=docker start -a $(CONTAINER_NAME)
+ExecStop=docker stop $(CONTAINER_NAME)
+Restart=always
+
+[Install]
+WantedBy=default.target
+EOF
 	systemctl --user daemon-reload
 
 start:
@@ -25,11 +38,11 @@ status:
 	systemctl --user status $(CONTAINER_NAME).service
 
 logs:
-	podman logs -f $(CONTAINER_NAME)
+	docker logs -f $(CONTAINER_NAME)
 
 clean:
 	systemctl --user stop $(CONTAINER_NAME).service || true
 	systemctl --user disable $(CONTAINER_NAME).service || true
 	rm -f ~/.config/systemd/user/$(CONTAINER_NAME).service
-	podman rm -f $(CONTAINER_NAME) || true
+	docker rm -f $(CONTAINER_NAME) || true
 	systemctl --user daemon-reload

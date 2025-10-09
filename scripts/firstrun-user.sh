@@ -7,11 +7,10 @@ cat <<'EOF'
 ╚════════════════════════════════════════╝
 
 This script will set up your workstation by:
-1. Installing Podman (rootless containers)
-2. Configuring NVIDIA GPU for containers
-3. Installing Google Chrome
-4. Installing Flatpak applications
-5. Setting up Home-Manager (Nix)
+1. Installing Docker (with optional Podman cleanup)
+2. Configuring NVIDIA GPU for Docker (if applicable)
+3. Installing Flatpak applications
+4. Setting up Home-Manager (Nix)
 
 Press Enter to continue, or Ctrl+C to exit.
 EOF
@@ -21,36 +20,26 @@ read -r
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo ""
-echo "=== [1/5] Podman Setup ==="
-"$SCRIPT_DIR/setup-podman.sh"
-"$SCRIPT_DIR/podman-loginctl-linger.sh"
-"$SCRIPT_DIR/podman-compose-install.sh"
+echo "=== [1/4] Docker Setup ==="
+"$SCRIPT_DIR/setup-docker.sh"
 
 echo ""
 if lspci | grep -qi 'VGA.*NVIDIA'; then
-    echo "=== [2/5] NVIDIA GPU Detected - Installing Container Toolkit ==="
-    "$SCRIPT_DIR/podman-nvidia-install.sh"
+    echo "=== [2/4] NVIDIA GPU Detected - Installing Container Toolkit ==="
+    "$SCRIPT_DIR/docker-nvidia-install.sh"
     echo ""
     echo "Testing GPU access..."
-    "$SCRIPT_DIR/podman-nvidia-verify.sh"
+    "$SCRIPT_DIR/docker-nvidia-verify.sh"
 else
-    echo "=== [2/5] No NVIDIA GPU detected, skipping ==="
+    echo "=== [2/4] No NVIDIA GPU detected, skipping ==="
 fi
 
 echo ""
-echo "=== [3/5] Google Chrome ==="
-read -p "Install Google Chrome? (y/N): " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    "$SCRIPT_DIR/setup-chrome.sh"
-fi
-
-echo ""
-echo "=== [4/5] Flatpak Applications ==="
+echo "=== [3/4] Flatpak Applications ==="
 "$SCRIPT_DIR/install-flatpaks.sh"
 
 echo ""
-echo "=== [5/5] Home-Manager Setup ==="
+echo "=== [4/4] Home-Manager Setup ==="
 if [ ! -d ~/git/home ]; then
     echo "Cloning home configuration..."
     mkdir -p ~/git
@@ -77,7 +66,7 @@ cat <<'EOF'
 
 Next steps:
 1. Log out and back in (to activate Nix profile)
-2. Test GPU: podman run --rm --device nvidia.com/gpu=all nvidia/cuda:12.4.0-base nvidia-smi
+2. Test GPU: docker run --rm --gpus all nvidia/cuda:12.4.0-base nvidia-smi
 3. Customize your Home-Manager config at ~/git/home
 4. Run 'home-manager switch --flake ~/git/home' to apply changes
 

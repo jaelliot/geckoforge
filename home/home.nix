@@ -3,6 +3,7 @@
 {
   imports = [
     ./modules/development.nix
+    ./modules/elixir.nix
     ./modules/desktop.nix
     ./modules/cli.nix
     ./modules/firefox.nix

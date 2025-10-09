@@ -57,6 +57,8 @@
     <package>vim</package>
   </packages>
 
+  <!-- Docker is installed post-deployment via scripts/setup-docker.sh to ensure proper daemon configuration -->
+
   <files>
     <file name="/usr/local/sbin/firstboot-nvidia.sh" mode="0755">scripts/firstboot-nvidia.sh</file>
     <file name="/usr/local/sbin/firstboot-nix.sh" mode="0755">scripts/firstboot-nix.sh</file>

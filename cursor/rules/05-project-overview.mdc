@@ -1,0 +1,219 @@
+---
+description: High-level project architecture and context for geckoforge
+alwaysApply: false
+---
+
+## Use when
+- Onboarding to the geckoforge project
+- Planning new features or major changes
+- Reviewing architectural decisions
+- Coordinating between layers (ISO/first-boot/user/HM)
+
+## Project Context
+
+### Author & Purpose
+- **Author**: Jay-Alexander Elliot
+- **Goal**: Create reproducible workstation template for openSUSE Leap 15.6
+- **Primary Use Case**: Replace Windows 10 with stable, GPU-enabled Linux workstation
+- **Target Hardware**: Powerful workstations/laptops with NVIDIA GPUs (130GB RAM, AMD Ryzen, NVIDIA GPU)
+
+### Design Philosophy
+1. **"Configure Once, Avoid BS Forever"** - Zero configuration hell through proper architecture
+2. **"System as Code"** - Full reproducibility via Git + Nix
+3. **"Layered Perfection"** - Clear separation of concerns (ISO → first-boot → user → HM)
+4. **"Production Ready"** - Battle-tested workflow (VM → laptop → production)
+
+### What Geckoforge Is
+- A **KIWI NG profile** that produces bootable openSUSE Leap 15.6 ISO
+- A **Home-Manager flake** for reproducible user environment
+- A **collection of scripts** for post-install setup (Docker, GPU, etc.)
+- A **comprehensive testing plan** (3 phases: VM, NVIDIA laptop, Windows replacement)
+- A **documentation suite** for installation and verification
+
+### What Geckoforge Is Not
+- **Not** a general-purpose distro (specific to author's needs)
+- **Not** a live-only system (designed for installation to disk)
+- **Not** a minimal system (includes full KDE Plasma desktop)
+- **Not** a server image (workstation-focused)
+
+## Technology Stack (Locked Decisions)
+
+### Base System (via KIWI + zypper)
+- **OS**: openSUSE Leap 15.6 (enterprise stability, 18-month releases)
+- **Desktop**: KDE Plasma 5 (customizable, powerful)
+- **Kernel**: Default kernel (with NVIDIA driver support)
+- **Bootloader**: GRUB2 (Secure Boot compatible)
+- **Filesystem**: Btrfs (snapshots via Snapper)
+- **Encryption**: LUKS2 (full disk except /boot)
+
+### Development Environment (via Nix)
+- **Languages**: TypeScript 5.6, Go 1.24, Python 3.12, Nim, C# (.NET 9), R, Elixir 1.18.4
+- **Cloud Tools**: AWS CLI, GCP CLI, Terraform, kubectl, Helm
+- **TeX Live**: scheme-medium (2GB, stable)
+- **Editors**: VS Code (via Flatpak), Vim (configured)
+
+### Container Runtime (via scripts)
+- **Runtime**: Docker Engine (NOT Podman)
+- **Compose**: Native docker compose
+- **GPU**: NVIDIA Container Toolkit
+- **Examples**: PostgreSQL, development databases
+
+### GUI Applications (via Flatpak)
+- **Development**: Postman, DBeaver, Android Studio
+- **Content Creation**: OBS Studio (with NVENC)
+- **Communication**: Signal
+- **Browsers**: Firefox (privacy-hardened), Chromium (development)
+
+## Architecture Overview
+
+### Four Sacred Layers
+
+```
+┌─────────────────────────────────────────┐
+│ Layer 4: Home-Manager (Nix)            │  ← User environment
+│  • Languages, tools, dev configs       │     (reproducible from flake.lock)
+│  • Dotfiles, shell configs             │
+│  • Browser extensions, settings        │
+└─────────────────────────────────────────┘
+            ↑ User runs: home-manager switch
+┌─────────────────────────────────────────┐
+│ Layer 3: User-Setup Scripts            │  ← Post-install manual
+│  • Docker installation                 │     (user runs firstrun-user.sh)
+│  • GPU container toolkit               │
+│  • Flatpak app installation            │
+└─────────────────────────────────────────┘
+            ↑ User runs: scripts/firstrun-user.sh
+┌─────────────────────────────────────────┐
+│ Layer 2: First-Boot Automation         │  ← Runs once automatically
+│  • NVIDIA driver detection & install   │     (systemd one-shot services)
+│  • Nix multi-user installation         │
+│  • System-level one-time setup         │
+└─────────────────────────────────────────┘
+            ↑ Automatic on first boot
+┌─────────────────────────────────────────┐
+│ Layer 1: KIWI ISO (Baked In)           │  ← Built into image
+│  • openSUSE Leap 15.6 base             │     (KIWI profile)
+│  • KDE Plasma desktop                  │
+│  • Kernel, firmware, base packages     │
+│  • NVIDIA repo configured              │
+│  • First-boot service units            │
+└─────────────────────────────────────────┘
+```
+
+### Data Flow
+1. **Build Time**: KIWI → ISO image
+2. **Install Time**: ISO → Disk (LUKS + Btrfs)
+3. **First Boot**: Systemd units → NVIDIA + Nix
+4. **User Setup**: Scripts → Docker + GPU + Flatpaks
+5. **Environment**: Home-Manager → Languages + Tools + Dotfiles
+6. **Updates**: Monthly (zypper), Weekly (flatpak), On-Demand (nix flake update)
+
+## Key Decisions & Rationale
+
+### Why openSUSE Leap 15.6?
+- ✅ Enterprise stability (same base as SUSE Enterprise)
+- ✅ Long release cycles (18 months)
+- ✅ Excellent Btrfs + Snapper integration
+- ✅ Native KIWI NG support
+- ✅ Strong NVIDIA driver support via official repos
+
+### Why KIWI NG?
+- ✅ Official openSUSE tool for custom ISOs
+- ✅ Reproducible image builds
+- ✅ Well-documented and supported
+- ✅ Integrates with zypper/YaST
+
+### Why Nix + Home-Manager?
+- ✅ Reproducible user environment from flake.lock
+- ✅ Per-project development shells
+- ✅ Atomic upgrades and rollbacks
+- ✅ Doesn't interfere with system package manager
+
+### Why Docker (not Podman)?
+- ✅ Simpler NVIDIA GPU integration
+- ✅ Native docker compose (no external tool)
+- ✅ Wider ecosystem support
+- ✅ Better documentation for development workflows
+
+### Why Flatpak for GUI Apps?
+- ✅ Sandboxed (security)
+- ✅ Frequent updates (OBS, browsers, etc.)
+- ✅ Doesn't conflict with system packages
+- ✅ Easy app management
+
+### Why TeX scheme-medium (not full)?
+- ✅ 2GB vs 5GB (reasonable size)
+- ✅ Includes everything needed for academic papers, presentations
+- ✅ More stable on openSUSE Leap than WSL2
+- ✅ Easy to add specific packages if needed
+
+## Use Cases & Workflows
+
+### Primary Use Case: AI/ML Development
+- GPU-accelerated containers (PyTorch, TensorFlow)
+- Development databases (PostgreSQL in Docker)
+- Multi-language support (Python, TypeScript, Go, Elixir)
+- Large RAM for model training (130GB)
+
+### Secondary Use Case: Content Creation
+- OBS Studio with NVENC hardware encoding
+- Video editing (Kdenlive)
+- Graphics (GIMP, Inkscape)
+- LaTeX document preparation
+
+### Tertiary Use Case: General Development
+- Web development (TypeScript, Go)
+- Cloud infrastructure (Terraform, kubectl)
+- Research papers (LaTeX via TeX scheme-medium)
+
+## Success Criteria
+
+### v0.1.0 (Initial Release)
+- ✅ ISO builds successfully
+- ✅ Boots in VM
+- ✅ First-boot scripts run
+- ✅ User setup wizard completes
+
+### v0.2.0 (KDE + GPU)
+- ✅ KDE Plasma desktop
+- ✅ NVIDIA driver auto-installs
+- ✅ Docker GPU containers work
+- ✅ All languages install via Home-Manager
+
+### v0.3.0 (Production Ready)
+- ✅ Tested on NVIDIA laptop
+- ✅ TeX Live verified
+- ✅ Full development workflow validated
+- ✅ Documentation complete
+
+### v1.0.0 (Windows Replacement)
+- ✅ Daily driver stability proven (2-3 weeks)
+- ✅ All workflows functional
+- ✅ Backup/restore tested
+- ✅ Ready to replace Windows 10
+
+## Constraints & Limitations
+
+### Hardware Requirements
+- ✅ NVIDIA GPU (for CUDA workloads)
+- ✅ 16GB RAM minimum (130GB for author's use case)
+- ✅ 50GB+ disk space
+- ✅ UEFI firmware
+
+### Software Constraints
+- ✅ openSUSE Leap 15.6 only (no other distros)
+- ✅ KDE Plasma only (no GNOME/Xfce)
+- ✅ Docker only (Podman removed)
+- ✅ Nix for user packages (not zypper)
+
+### Design Constraints
+- ✅ Must be reproducible from Git
+- ✅ Must support Secure Boot
+- ✅ Must allow OS rollbacks (Snapper)
+- ✅ Must allow app rollbacks (Nix generations)
+
+## References
+- openSUSE Leap: https://www.opensuse.org/
+- KIWI NG: https://osinside.github.io/kiwi/
+- Nix: https://nixos.org/
+- Home-Manager: https://github.com/nix-community/home-manager

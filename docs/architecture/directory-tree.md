@@ -3,7 +3,8 @@
 │   ├── modules
 │   │   ├── cli.nix
 │   │   ├── desktop.nix
-│   │   └── development.nix
+│   │   ├── development.nix
+│   │   └── elixir.nix
 │   ├── flake.nix
 │   └── home.nix
 ├── profiles
@@ -25,24 +26,25 @@
 │   ├── examples
 │   │   ├── cuda-nv-smi
 │   │   │   └── README.md
+│   │   ├── postgres-docker-compose
+│   │   │   ├── README.md
+│   │   │   └── docker-compose.yml
 │   │   └── systemd-gpu-service
 │   │       ├── Makefile
 │   │       └── README.md
 │   ├── firstrun-user.sh
 │   ├── harden.sh
 │   ├── install-flatpaks.sh
-│   ├── podman-compose-install.sh
-│   ├── podman-loginctl-linger.sh
-│   ├── podman-nvidia-install.sh
-│   ├── podman-nvidia-verify.sh
+│   ├── docker-nvidia-install.sh
+│   ├── docker-nvidia-verify.sh
 │   ├── prune-containers.service
 │   ├── prune-containers.timer
 │   ├── setup-chrome.sh
-│   └── setup-podman.sh
+│   └── setup-docker.sh
 ├── tools
 │   └── kiwi-build.sh
 ├── .gitignore
 ├── LICENSE
 └── README.md
 
-19 directories, 26 files
+20 directories, 25 files

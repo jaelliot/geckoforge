@@ -2,7 +2,7 @@
 
 **Reproducible, production-grade KDE Plasma desktop for openSUSE Leap 15.6**
 
-Built with KIWI NG + Nix + Podman for maximum stability and GPU-accelerated AI workloads.
+Built with KIWI NG + Nix + Docker for maximum stability and GPU-accelerated AI workloads.
 
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
 ![openSUSE](https://img.shields.io/badge/openSUSE-Leap%2015.6-73BA25.svg)
@@ -16,7 +16,9 @@ Built with KIWI NG + Nix + Podman for maximum stability and GPU-accelerated AI w
 - 📸 **Instant rollbacks**: Btrfs + Snapper (OS) + Nix generations (apps)
 - 🎮 **GPU containers**: NVIDIA driver + Container Toolkit with CDI
 - 🔄 **Fully reproducible**: Everything in Git, rebuild ISO anytime
-- 🐳 **Rootless Podman**: Containers as systemd services, no Docker daemon
+- 🐳 **Docker + NVIDIA**: Daemon-based runtime with toolkit + CDI for GPU workloads
+- 🧱 **Multi-language dev stack**: TypeScript, Go, Python, Nim, C#, R, and Elixir via asdf
+- 🖨️ **TeX Live scheme-medium**: Stable 2 GB distribution tuned for Leap 15.6
 - 🖥️ **KDE Plasma**: Modern, customizable, lightweight desktop
 
 ---
@@ -80,7 +82,9 @@ See [Getting Started](docs/getting-started.md) for full guide.
 | [Testing Plan](docs/testing-plan.md) | VM → Laptop → Production |
 | [Backup & Restore](docs/backup-restore.md) | Data safety |
 | [Recovery](docs/recovery.md) | Rollback procedures |
-| [Podman + NVIDIA](docs/podman-nvidia.md) | GPU containers |
+| [Podman → Docker Migration](docs/podman-to-docker-migration.md) | Rationale & command map |
+| [Docker + NVIDIA](docs/docker-nvidia.md) | GPU containers |
+| [TeX Verification](docs/tex-verification.md) | Validate TeX Live scheme-medium |
 | [OBS NVENC](docs/obs-nvenc-setup.md) | Hardware encoding |
 | [Btrfs Layout](docs/btrfs-layout.md) | Subvolume structure |
 
@@ -185,7 +189,7 @@ Apache 2.0 - See [LICENSE](LICENSE)
 - [openSUSE Leap](https://www.opensuse.org/)
 - [KIWI NG](https://osinside.github.io/kiwi/)
 - [Nix](https://nixos.org/) + [Home-Manager](https://github.com/nix-community/home-manager)
-- [Podman](https://podman.io/)
+- [Docker](https://www.docker.com/)
 - [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)
 
 ---

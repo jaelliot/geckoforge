@@ -89,7 +89,7 @@ home-manager switch --flake .
 - [ ] VS Code settings synced
 - [ ] Flatpak apps show in app menu
 - [ ] `nvidia-smi` works
-- [ ] Podman GPU test passes
+- [ ] Docker GPU test passes
 - [ ] Home-Manager generation matches expected
 
 ## Common Issues
@@ -106,5 +106,5 @@ home-manager switch --flake .
 - **Symptom**: `nvidia-smi` or container GPU fails
 - **Fix**:
   1. Check driver: `zypper se -i nvidia`
-  2. Reinstall toolkit: `scripts/podman-nvidia-install.sh`
-  3. Regenerate CDI: `sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml`
+   2. Reinstall toolkit: `scripts/docker-nvidia-install.sh`
+   3. Re-run verification: `scripts/docker-nvidia-verify.sh`

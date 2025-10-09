@@ -1,5 +1,5 @@
 [Unit]
-Description=Weekly Podman cleanup
+Description=Weekly Docker cleanup
 
 [Timer]
 OnCalendar=weekly

@@ -111,19 +111,15 @@ cd ~/git
 git clone https://github.com/jaelliot/geckoforge.git
 cd geckoforge
 
-# Make scripts executable
-chmod +x scripts/*.sh
-
 # Run wizard
 ./scripts/firstrun-user.sh
 ```
 
 **This installs**:
-- Podman (rootless containers)
-- NVIDIA Container Toolkit (GPU in containers)
-- Google Chrome (optional)
+- Docker (removes Podman and prompts before deleting data)
+- NVIDIA Container Toolkit for Docker (when GPU detected)
 - Flatpak apps (Postman, DBeaver, OBS, Signal, Android Studio)
-- Home-Manager (Nix dotfiles)
+- Home-Manager bootstrap (Nix dotfiles)
 
 **Time**: 15-20 minutes
 
@@ -166,13 +162,17 @@ home-manager switch --flake .
 # Nix works?
 nix run nixpkgs#hello
 
-# Podman works?
-podman run hello-world
+# Docker works?
+docker run hello-world
 
 # GPU works? (NVIDIA only)
 nvidia-smi
-podman run --rm --device nvidia.com/gpu=all \
+docker run --rm --gpus all \
   nvidia/cuda:12.4.0-base nvidia-smi
+
+# TeX Live ready?
+cd ~/git/geckoforge/docs
+less tex-verification.md
 
 # Flatpaks installed?
 flatpak list
@@ -268,18 +268,18 @@ source ~/.nix-profile/etc/profile.d/nix.sh
 # Or log out and back in
 ```
 
-### "Podman permission denied"
+### "Docker permission denied"
 
 ```bash
-grep "^$USER:" /etc/subuid /etc/subgid
-~/git/geckoforge/scripts/setup-podman.sh
+newgrp docker
+~/git/geckoforge/scripts/setup-docker.sh
 ```
 
 ### "GPU not accessible in containers"
 
 ```bash
-sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
-nvidia-ctk cdi list
+~/git/geckoforge/scripts/docker-nvidia-install.sh
+~/git/geckoforge/scripts/docker-nvidia-verify.sh
 ```
 
 ---

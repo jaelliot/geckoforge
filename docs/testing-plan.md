@@ -57,10 +57,10 @@ Display: 3D acceleration enabled
 #### TC-004: User Setup
 - [ ] Clone repo succeeds
 - [ ] `firstrun-user.sh` completes
-- [ ] Podman: `podman run hello-world`
-- [ ] Chrome installs (if opted in)
+- [ ] Docker: `docker run hello-world`
 - [ ] Flatpaks: `flatpak list` shows apps
 - [ ] Home-Manager: `home-manager generations`
+- [ ] TeX docs reviewed: `less docs/tex-verification.md`
 
 #### TC-005: Package Management
 - [ ] zypper: `sudo zypper ref`
@@ -115,11 +115,11 @@ Display: 3D acceleration enabled
 - [ ] External displays work
 
 #### TC-102: GPU Containers
-- [ ] Toolkit installed
+- [ ] Toolkit installed (`docker-nvidia-install.sh`)
 - [ ] CDI spec: `/etc/cdi/nvidia.yaml`
 - [ ] Devices: `nvidia-ctk cdi list`
-- [ ] Container test: `podman run --device nvidia.com/gpu=all nvidia/cuda:12.4.0-base nvidia-smi`
-- [ ] Rootless works
+- [ ] Container test: `docker run --rm --gpus all nvidia/cuda:12.4.0-base nvidia-smi`
+- [ ] Non-root access works (`docker run --rm --gpus all` as user)
 
 #### TC-103: OBS NVENC
 - [ ] OBS installed via Flatpak
@@ -190,7 +190,7 @@ Before Windows replacement:
 - [ ] ✅ First-boot scripts work
 - [ ] ✅ NVIDIA driver installs
 - [ ] ✅ Nix + Home-Manager functional
-- [ ] ✅ Podman rootless works
+- [ ] ✅ Docker daemon + rootless access works
 - [ ] ✅ GPU containers work
 - [ ] ✅ Snapper rollbacks work
 - [ ] ✅ Nix rollbacks work
