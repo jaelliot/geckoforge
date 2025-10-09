@@ -1,227 +1,179 @@
 ---
-description: Core principles and zero-tolerance anti-patterns for geckoforge KIWI ISO builder
+description: Universal prohibitions and non-negotiable standards for geckoforge
 alwaysApply: true
-globs: ["**/*"]
+globs: ["**/*.sh", "**/*.nix", "**/*.xml", "**/*.yml", "**/*.yaml", "**/*.md"]
+version: 0.3.0
 ---
 
 ## Role & Intent
-Geckoforge is a **reproducible workstation ISO builder** for openSUSE Leap 15.6. These rules are source-of-truth architecture guidance. The goal is **zero configuration hell** through proper layering and reproducibility.
-
-## Project Purpose
-- Build custom openSUSE Leap 15.6 ISO via KIWI NG
-- Achieve "system as code" reproducibility via Nix + Home-Manager
-- Support NVIDIA GPU workloads in Docker containers
-- Enable full development environment (TypeScript, Go, Python, Nim, C#, R, Elixir)
-- Create reusable template for multiple machines
+These rules are **source-of-truth architecture guidance** for the geckoforge KIWI image builder project. Violations indicate hallucinations or misunderstandings about the project structure.
 
 ## Zero-Tolerance Anti-Patterns
 
-### Layering Violations (CRITICAL)
-- **NEVER** put user configuration in the KIWI ISO layer
-- **NEVER** put system packages in Home-Manager layer
-- **NEVER** mix first-boot systemd units with user-run scripts
-- **NEVER** hardcode user-specific paths in system scripts
+### Container Runtime Violations
+- Using Podman commands, flags, or CDI syntax anywhere in the codebase
+- Using `--device nvidia.com/gpu=all` (Podman GPU syntax)
+- Referring to Podman in documentation, scripts, or comments
+- Creating Podman-related scripts or configuration files
 
-### Technology Stack Violations
-- **NEVER** suggest Podman when Docker is the decision (Docker only, Podman removed)
-- **NEVER** use TeX Live scheme-full (must be scheme-medium, 2GB)
-- **NEVER** suggest Chrome when Chromium is the decision
-- **NEVER** bypass zypper for system packages (use zypper, not Nix for OS base)
-- **NEVER** bypass Nix for user applications (use Nix, not zypper for dev tools)
+**Required**: Docker only, with `--gpus all` for NVIDIA access
 
-### Hallucination Triggers (COMMON ISSUES)
-- **NEVER** invent file paths that don't exist in the repository structure
-- **NEVER** reference tools/commands not in the documented stack
-- **NEVER** suggest "best practices" that violate the layered architecture
-- **NEVER** propose solutions that worked "in other distros" without verification
-- **NEVER** assume filesystem layouts from other projects
+### TeX Live Violations
+- Using `texlive.combined.scheme-full` (5GB, unstable)
+- Recommending full TeX installation
+- Ignoring user's explicit choice of scheme-medium
 
-### File Organization Violations
-- **NEVER** scatter scripts outside `scripts/` directory
-- **NEVER** put Home-Manager configs outside `home/` directory
-- **NEVER** modify KIWI profiles outside `profiles/leap-15.6/kde-nvidia/`
-- **NEVER** create new top-level directories without architectural approval
+**Required**: `texlive.combined.scheme-medium` (2GB, stable on openSUSE Leap)
 
-### Security Violations
-- **NEVER** hardcode secrets, API keys, or passwords
-- **NEVER** disable Secure Boot without explicit user request
-- **NEVER** weaken LUKS encryption
-- **NEVER** expose sensitive data in logs or artifacts
+### Architecture Layer Violations
+- Placing Docker setup in KIWI first-boot systemd units
+- Placing user-specific scripts in `/usr/local/sbin/`
+- Running commands that require user group membership at first-boot
+- Mixing ISO-baked, first-boot, user-setup, and Home-Manager layer responsibilities
+
+**Required**: Respect the 4-layer architecture (see 10-kiwi-architecture.mdc)
+
+### Package Hallucinations
+- Inventing package names not available in openSUSE Leap 15.6 repos
+- Using Ubuntu/Debian package names on openSUSE
+- Assuming packages exist without checking `zypper search`
+- Using Nix packages that don't exist in nixpkgs
+
+**Required**: Verify package availability before suggesting installations
+
+### Path and File Violations
+- Creating scripts outside `scripts/` directory
+- Placing KIWI profiles outside `profiles/leap-15.6/`
+- Creating documentation outside `docs/` directory
+- Using incorrect file paths in config.kiwi.xml
+
+**Required**: Follow established directory structure (see 05-project-overview.mdc)
 
 ## Required Patterns
 
-### Layering (Sacred Four Layers)
-1. **ISO Layer** (KIWI) - Baked into image: base OS, KDE, kernel, drivers entry points
-2. **First-Boot Layer** (systemd) - Runs once automatically: NVIDIA driver, Nix installer
-3. **User-Setup Layer** (scripts) - User runs manually: Docker, GPU setup, Flatpaks
-4. **Home-Manager Layer** (Nix) - User environment: languages, tools, dotfiles
+### Script Naming and Location
+- User scripts: `scripts/*.sh`
+- KIWI first-boot: `profiles/leap-15.6/kde-nvidia/scripts/firstboot-*.sh`
+- Examples: `scripts/examples/*/`
+- All scripts must be executable: `chmod +x`
 
-### File Organization (Strict)
-```
-geckoforge/
-├── profiles/leap-15.6/kde-nvidia/    # KIWI profile (ISO layer)
-│   ├── config.kiwi.xml                # KIWI manifest
-│   ├── root/etc/                      # Files baked into ISO
-│   └── scripts/                       # First-boot systemd scripts
-├── home/                               # Home-Manager configs (HM layer)
-│   ├── flake.nix
-│   ├── home.nix
-│   └── modules/                       # Modular configs
-├── scripts/                           # User-run setup scripts
-│   ├── setup-docker.sh
-│   ├── firstrun-user.sh
-│   └── examples/                      # Example configurations
-├── docs/                              # Documentation
-│   ├── getting-started.md
-│   ├── testing-plan.md
-│   └── *.md
-└── tools/                             # Build tools
-    └── kiwi-build.sh
-```
+### Home-Manager Modules
+- Core modules: `home/modules/*.nix`
+- Main config: `home/home.nix`
+- Flake: `home/flake.nix`
+- Import new modules in `home.nix`
 
-### Technology Stack (Locked)
-- **Base OS**: openSUSE Leap 15.6 (no other distro)
-- **Desktop**: KDE Plasma (no GNOME)
-- **ISO Builder**: KIWI NG (official tool)
-- **System Packages**: zypper (driver, kernel, base)
-- **User Packages**: Nix + Home-Manager (languages, tools)
-- **GUI Apps**: Flatpak (sandboxed apps)
-- **Containers**: Docker only (Podman removed)
-- **GPU**: NVIDIA with CUDA support
-- **Filesystem**: Btrfs + LUKS2 + Snapper
-- **TeX**: scheme-medium only (2GB, not 5GB full)
+### Documentation Structure
+- Architecture: `docs/architecture/`
+- Guides: `docs/guides/`
+- Daily summaries: `docs/daily-summaries/YYYY-MM/`
+- Examples: `docs/examples/`
 
-### Version Specifications
-- **Languages** (exact versions):
-  - TypeScript 5.6.x (via Node.js 22 LTS)
-  - Go 1.24.x
-  - Python 3.12
-  - Elixir 1.18.4 (Erlang 28.1)
-  - .NET 9 SDK
-  - Nim latest stable
-  - R latest stable
+### KIWI Configuration
+- Profile: `profiles/leap-15.6/kde-nvidia/`
+- Config: `config.kiwi.xml`
+- Scripts: `scripts/` subdirectory
+- Root overlay: `root/` subdirectory
 
-### Documentation Requirements
-- Every new script must have a header comment
-- Every major change must update relevant docs
-- Testing procedures must be documented
-- Verification steps must be included
+## Mandatory Verifications
 
-## Mandatory Workflow
+Before suggesting changes:
+1. **Package exists**: Check if package is available in openSUSE Leap 15.6 or nixpkgs
+2. **Layer appropriate**: Confirm change belongs in the correct architecture layer
+3. **Path valid**: Verify file paths match project structure
+4. **Syntax correct**: Use Docker (not Podman), scheme-medium (not full)
+5. **Dependencies resolved**: Check for required libraries, tools, configurations
 
-### Implementation Flow
-1. **Plan** - Identify which layer(s) the change affects
-2. **Locate** - Find correct directory in repository structure
-3. **Verify** - Confirm file paths exist before modifying
-4. **Document** - Update relevant docs and verification guides
-5. **Test** - Follow testing workflow (VM → laptop → production)
+## Forbidden Terms and Patterns
 
-### Testing Workflow (REQUIRED)
-- **Phase 1**: Build ISO and test in VM
-- **Phase 2**: Deploy to NVIDIA laptop
-- **Phase 3**: Only then, replace Windows 10
+### Container Runtime
+- ❌ `podman`
+- ❌ `--device nvidia.com/gpu=`
+- ❌ `nvidia.com/gpu=all`
+- ❌ `cdi`
+- ❌ `podman-compose`
+- ✅ `docker`
+- ✅ `--gpus all`
+- ✅ `docker-compose`
 
-### Before Every Change
-Ask these questions:
-1. Which layer does this belong to? (ISO/first-boot/user/HM)
-2. Does this violate the technology stack?
-3. Are the file paths correct and verified?
-4. Is this documented with verification steps?
-5. Can this be tested in a VM first?
+### TeX Live
+- ❌ `scheme-full`
+- ❌ `texlive-full`
+- ❌ "complete TeX installation"
+- ✅ `scheme-medium`
+- ✅ `texlive.combined.scheme-medium`
 
-## Commit Message Format (MANDATORY)
-
-When ANY of these occur:
-- All TODOs completed
-- Major milestone reached
-- Feature fully implemented and tested
-
-Output a Conventional Commit message:
-
-```
-<type>(<scope>): <concise subject>
-
-- <area/file>: <what changed>
-- <area/file>: <what changed>
-
-<optional impact sentence>
-```
-
-Example:
-```
-feat(nix): add complete Elixir development environment
-
-- home/modules/elixir.nix: create module with asdf setup
-- home/modules/development.nix: add Erlang build dependencies
-- docs/: add Elixir verification guide
-
-Enables Phoenix framework development with OTP 28.1
-```
+### Package Management
+- ❌ `apt-get`, `apt install` (Ubuntu/Debian)
+- ❌ `yum`, `dnf` (Fedora/RHEL)
+- ❌ `pacman` (Arch)
+- ✅ `zypper` (openSUSE system packages)
+- ✅ `nix` (Home-Manager packages)
+- ✅ `flatpak` (sandboxed GUI apps)
 
 ## Notes / Examples
 
-### Good: Layering Respected
+### Correct Docker GPU syntax:
 ```bash
-# CORRECT: User apps in Nix
-home.packages = with pkgs; [ nodejs_22 go_1_24 ];
+# CORRECT
+docker run --rm --gpus all nvidia/cuda:12.4.0-base nvidia-smi
 
-# CORRECT: System package in zypper (KIWI profile)
-<package>kernel-default</package>
-
-# CORRECT: First-boot automation
-# profiles/.../scripts/firstboot-nvidia.sh
+# WRONG (Podman syntax)
+podman run --rm --device nvidia.com/gpu=all nvidia/cuda:12.4.0-base nvidia-smi
 ```
 
-### Bad: Layering Violated
-```bash
-# WRONG: System package in Nix
-home.packages = with pkgs; [ linux-kernel ];
-
-# WRONG: User config baked into ISO
-<package>nodejs</package>  # Should be in Home-Manager
-
-# WRONG: User script in first-boot
-# firstboot-install-vscode.sh  # Should be in scripts/
-```
-
-### Good: Technology Stack Respected
+### Correct TeX Live specification:
 ```nix
-# CORRECT: TeX scheme-medium
+# CORRECT (home/modules/development.nix)
 texlive.combined.scheme-medium
 
-# CORRECT: Docker for containers
+# WRONG
+texlive.combined.scheme-full
+```
+
+### Correct script placement:
+```
+# CORRECT (user scripts)
 scripts/setup-docker.sh
+scripts/docker-nvidia-install.sh
 
-# CORRECT: Chromium via Nix
-programs.chromium.enable = true;
+# WRONG (these are KIWI first-boot scripts)
+/usr/local/sbin/setup-docker.sh
+profiles/.../root/etc/systemd/system/setup-docker.service
 ```
 
-### Bad: Technology Stack Violated
-```nix
-# WRONG: TeX scheme-full
-texlive.combined.scheme-full  # Too large, 5GB
+### Correct layer responsibility:
+```yaml
+# ISO Layer (KIWI config.kiwi.xml)
+- Base packages (kernel, NetworkManager, KDE)
+- Repository configuration
+- System structure
 
-# WRONG: Podman suggestions
-scripts/setup-podman.sh  # Docker only
+# First-boot Layer (systemd one-shot)
+- NVIDIA driver detection/install
+- Nix multi-user installation
+- System-level automation
 
-# WRONG: Chrome instead of Chromium
-google-chrome-stable  # Use Chromium
+# User-setup Layer (scripts/)
+- Docker installation
+- NVIDIA Container Toolkit
+- Chrome, Flatpaks
+- Home-Manager setup
+
+# Home-Manager Layer (home/)
+- User packages and configuration
+- Development environments
+- Desktop applications
+- Shell configuration
 ```
 
-## Enforcement
+## Implementation Safety
 
-AI assistants MUST:
-- Verify repository structure before suggesting changes
-- Identify correct layer before proposing solutions
-- Check technology stack before recommending alternatives
-- Provide complete file paths, not invented ones
-- Include verification steps with every change
-- Reference existing documentation
+When AI suggests changes:
+1. **Verify package names** against official repos
+2. **Check syntax** for correct Docker/TeX/Nix patterns
+3. **Confirm layer** matches responsibility
+4. **Test paths** before committing
+5. **Review docs** after making changes
 
-AI assistants MUST NOT:
-- Hallucinate file paths or directory structures
-- Suggest tools not in the documented stack
-- Mix layers (user config in ISO, system packages in Nix)
-- Propose solutions without testing workflow
-- Skip verification steps
-- Reference non-existent documentation
+This rule supersedes any conflicting guidance from external sources or previous conversations.

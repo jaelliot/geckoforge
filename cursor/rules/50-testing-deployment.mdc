@@ -1,0 +1,456 @@
+---
+description: Testing requirements and deployment verification procedures
+globs: ["tools/**/*", "scripts/**/*", "docs/testing-plan.md"]
+alwaysApply: false
+---
+
+## Use when
+- Building and testing ISO images
+- Verifying system functionality
+- Planning deployment to new hardware
+- Creating test procedures
+
+## Testing Philosophy
+
+### Test Before Deploy (MANDATORY)
+```
+Code Changes → ISO Build → VM Test → Laptop Test → Production
+     ↓            ↓           ↓           ↓            ↓
+   Quick      10-15 min    30 min    1-2 weeks   Stable Use
+```
+
+**Never skip VM testing before deploying to physical hardware.**
+
+---
+
+## Three-Phase Testing Strategy
+
+### Phase 1: VM Testing (Required)
+**Duration**: 1-2 days  
+**Goal**: Catch showstopper bugs in safe environment  
+**Tools**: QEMU/KVM or VirtualBox
+
+#### Test VM Configuration:
+```bash
+# QEMU
+qemu-system-x86_64 \
+    -enable-kvm \
+    -m 8192 \
+    -smp 4 \
+    -cdrom out/geckoforge-*.iso \
+    -drive file=test.qcow2,format=qcow2 \
+    -boot d \
+    -vga virtio
+```
+
+#### VM Test Checklist:
+- [ ] ISO boots to live environment
+- [ ] Installer launches successfully
+- [ ] LUKS encryption works
+- [ ] Installation completes
+- [ ] System boots to SDDM login
+- [ ] First-boot scripts execute
+  - [ ] `geckoforge-firstboot.service` completes (NVIDIA will fail in VM - OK)
+  - [ ] `geckoforge-nix.service` completes
+  - [ ] `/nix` directory exists
+- [ ] User can log in to KDE
+- [ ] Network connectivity works
+- [ ] Can clone geckoforge repo
+- [ ] `scripts/firstrun-user.sh` completes
+- [ ] Home-Manager installs successfully
+- [ ] Docker works (basic `hello-world`)
+- [ ] Flatpaks install
+- [ ] Can compile TeX document
+- [ ] Snapper snapshots exist
+
+---
+
+### Phase 2: Laptop Testing (Recommended)
+**Duration**: 1-2 weeks  
+**Goal**: Validate NVIDIA, power management, daily workflows  
+**Hardware**: NVIDIA laptop or secondary workstation
+
+#### Laptop Test Checklist:
+- [ ] NVIDIA driver installs automatically
+- [ ] `nvidia-smi` shows GPU
+- [ ] KDE Plasma loads with GPU acceleration
+- [ ] Multi-monitor setup works
+- [ ] External displays detected
+- [ ] NVIDIA Container Toolkit installs
+- [ ] `docker run --gpus all` works
+- [ ] GPU containers access CUDA cores
+- [ ] Suspend/resume works
+- [ ] Battery indicator accurate
+- [ ] Brightness control works
+- [ ] Audio works
+- [ ] Bluetooth works
+- [ ] Wi-Fi stable
+- [ ] USB devices recognized
+- [ ] Webcam works (if applicable)
+- [ ] OBS NVENC available
+- [ ] TeX compiles real documents
+- [ ] Elixir/Phoenix development works
+- [ ] VS Code + extensions functional
+- [ ] Docker Compose projects work
+- [ ] No kernel panics or freezes
+- [ ] System stays responsive under load
+
+#### Daily Driver Test:
+Use laptop as primary machine for 1-2 weeks:
+- [ ] Web browsing (Chromium)
+- [ ] Development work (VS Code, terminal)
+- [ ] Meetings (Teams/Zoom)
+- [ ] Email and communication
+- [ ] File management (Dolphin)
+- [ ] Media playback
+- [ ] Document creation
+- [ ] Container development
+
+---
+
+### Phase 3: Production Deployment
+**Duration**: Ongoing  
+**Goal**: Replace Windows 10 on main workstation  
+**Hardware**: 130GB RAM, AMD Ryzen, NVIDIA GPU
+
+#### Pre-Deployment Backup (MANDATORY):
+- [ ] Documents and projects backed up
+- [ ] SSH keys backed up
+- [ ] Browser profiles exported
+- [ ] VS Code settings synced
+- [ ] Git repositories pushed
+- [ ] Database backups created
+- [ ] Important files archived
+- [ ] Windows recovery USB created
+
+#### Deployment Checklist:
+- [ ] Windows backup verified
+- [ ] ISO written to USB
+- [ ] Boot from USB successful
+- [ ] Installation completed
+- [ ] First-boot scripts completed
+- [ ] User setup completed
+- [ ] Home-Manager configured
+- [ ] Docker + NVIDIA functional
+- [ ] All development tools work
+- [ ] Data restored from backup
+- [ ] Workflow validated
+
+---
+
+## ISO Build Testing
+
+### Build Verification:
+```bash
+# Build ISO
+./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+
+# Check build artifacts
+ls -lh out/geckoforge-*.iso
+# Should be 2.5-3.5 GB
+
+# Verify ISO is bootable
+file out/geckoforge-*.iso
+# Should show: DOS/MBR boot sector ISO 9660
+```
+
+### Common Build Issues:
+
+#### "Package not found"
+**Symptom**: KIWI fails during package installation  
+**Cause**: Package name incorrect or not in repos  
+**Fix**: Verify with `zypper search package-name`
+
+#### "File not found"
+**Symptom**: KIWI can't copy overlay files  
+**Cause**: Path mismatch in config.kiwi.xml  
+**Fix**: Check paths in `<file>` elements
+
+#### "Repository metadata invalid"
+**Symptom**: Can't access openSUSE repos  
+**Cause**: Network issue or repo URL changed  
+**Fix**: Check repo URLs in config.kiwi.xml
+
+---
+
+## Automated Testing Script
+
+### Quick ISO Test:
+```bash
+# tools/test-iso.sh
+
+#!/usr/bin/env bash
+set -euo pipefail
+
+ISO="${1:-$(ls out/*.iso 2>/dev/null | tail -n1)}"
+
+if [ ! -f "$ISO" ]; then
+    echo "❌ ISO not found"
+    exit 1
+fi
+
+echo "🧪 Testing ISO: $(basename "$ISO")"
+
+# Create test disk
+DISK="work/test-$(date +%s).qcow2"
+qemu-img create -f qcow2 "$DISK" 50G
+
+# Launch VM
+qemu-system-x86_64 \
+    -enable-kvm \
+    -m 8192 \
+    -smp 4 \
+    -cdrom "$ISO" \
+    -drive file="$DISK",format=qcow2,if=virtio \
+    -boot d \
+    -vga virtio \
+    -usb \
+    -device usb-tablet
+
+# Cleanup
+read -p "Delete test disk? (y/N): " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    rm -f "$DISK"
+fi
+```
+
+---
+
+## Component Testing
+
+### TeX Live Verification:
+```bash
+# Test TeX installation
+cat > test.tex <<'EOF'
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\begin{document}
+\title{Test Document}
+\author{Your Name}
+\maketitle
+\section{Introduction}
+This is a test of \LaTeX\ with math:
+\begin{equation}
+E = mc^2
+\end{equation}
+\end{document}
+EOF
+
+pdflatex test.tex
+ls test.pdf  # Should exist
+```
+
+### Docker + GPU Verification:
+```bash
+# Test Docker
+docker run hello-world
+
+# Test NVIDIA
+nvidia-smi
+
+# Test GPU in container
+docker run --rm --gpus all nvidia/cuda:12.4.0-base nvidia-smi
+```
+
+### Elixir Verification:
+```bash
+# Test Elixir installation
+elixir --version
+
+# Test Phoenix installation
+mix archive.install hex phx_new
+mix phx.new test_app --no-ecto
+cd test_app
+mix deps.get
+mix phx.server
+# Should start on http://localhost:4000
+```
+
+---
+
+## Performance Testing
+
+### System Responsiveness:
+```bash
+# CPU stress test
+stress-ng --cpu 8 --timeout 60s --metrics
+
+# Memory test
+stress-ng --vm 4 --vm-bytes 80% --timeout 30s
+
+# Disk I/O test
+dd if=/dev/zero of=test.img bs=1G count=1 oflag=direct
+rm test.img
+
+# GPU test (NVIDIA)
+nvidia-smi dmon -s u -c 10
+```
+
+### Boot Time:
+```bash
+# Check boot time
+systemd-analyze
+# Target: <20 seconds to login
+
+# Identify slow services
+systemd-analyze blame
+```
+
+---
+
+## Regression Testing
+
+### Checklist After Changes:
+- [ ] ISO builds successfully
+- [ ] ISO size reasonable (2.5-3.5 GB)
+- [ ] VM boots and installs
+- [ ] First-boot scripts complete
+- [ ] No new systemd failures
+- [ ] Home-Manager switches without errors
+- [ ] Critical workflows still work:
+  - [ ] Docker containers
+  - [ ] TeX compilation
+  - [ ] GUI apps launch
+  - [ ] Network connectivity
+  - [ ] GPU access (on hardware)
+
+---
+
+## Acceptance Criteria
+
+### For v0.3.0 Release:
+- [ ] ✅ ISO builds without errors
+- [ ] ✅ Docker replaces Podman completely
+- [ ] ✅ TeX uses scheme-medium
+- [ ] ✅ NVIDIA driver auto-installs
+- [ ] ✅ Multi-language dev stack works
+- [ ] ✅ Elixir/Phoenix functional
+- [ ] ✅ Chromium with extensions
+- [ ] ✅ All scripts executable
+- [ ] ✅ Documentation complete
+- [ ] ✅ Tested in VM
+- [ ] ✅ Tested on laptop (2 weeks)
+- [ ] ⏳ Production deployment
+
+---
+
+## Rollback Procedures
+
+### If VM Test Fails:
+1. Review build logs: `less work/*.log`
+2. Check config.kiwi.xml for errors
+3. Verify package names with `zypper search`
+4. Fix issues
+5. Rebuild ISO
+6. Test again
+
+### If Laptop Test Fails:
+1. Boot from USB again
+2. Identify failing component
+3. Update config or scripts
+4. Rebuild ISO
+5. Reinstall on laptop
+6. Test specific component
+
+### If Production Deployment Fails:
+1. Boot Windows recovery USB
+2. Restore Windows from backup
+3. Extract failed config details
+4. Fix issues in dev environment
+5. Repeat VM → Laptop → Production
+
+---
+
+## Continuous Verification
+
+### Weekly Checks:
+```bash
+# Update packages
+sudo zypper refresh && sudo zypper update
+cd ~/git/home && nix flake update && home-manager switch
+flatpak update
+
+# Verify core functionality
+docker run hello-world
+nvidia-smi
+pdflatex --version
+elixir --version
+```
+
+### Monthly Checks:
+```bash
+# Rebuild ISO with latest packages
+./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+
+# Test in VM
+./tools/test-iso.sh out/geckoforge-*.iso
+
+# Update documentation
+```
+
+---
+
+## Bug Reporting Template
+
+```markdown
+## Bug Report
+
+**ISO Version**: v0.3.0  
+**Build Date**: 2025-01-06  
+**Hardware**: [VM / NVIDIA Laptop / AMD Workstation]
+
+### Steps to Reproduce:
+1. ...
+2. ...
+
+### Expected Behavior:
+...
+
+### Actual Behavior:
+...
+
+### Logs:
+```
+# Relevant logs from journalctl or build output
+```
+
+### Workaround:
+...
+
+### Impact:
+[Critical / High / Medium / Low]
+```
+
+---
+
+## Success Metrics
+
+### ISO Quality:
+- ✅ Builds in <15 minutes
+- ✅ Size between 2.5-3.5 GB
+- ✅ Boots on VM and hardware
+- ✅ No critical errors in logs
+
+### User Experience:
+- ✅ Installation <30 minutes
+- ✅ First-boot completes automatically
+- ✅ User setup <20 minutes
+- ✅ System responsive on modern hardware
+
+### Stability:
+- ✅ No kernel panics
+- ✅ Suspend/resume works
+- ✅ Multi-day uptime without issues
+- ✅ GPU acceleration stable
+
+---
+
+## Notes
+
+- Always test in VM before hardware
+- Document any deviations from test plan
+- Keep test results in daily summaries
+- Update test checklists as system evolves
+- Share findings that could help others
