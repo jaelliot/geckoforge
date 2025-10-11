@@ -1,0 +1,87 @@
+# @file lefthook.yml
+# @description Git hooks configuration for geckoforge quality gates
+# @update-policy Update when adding new validation rules or checks
+
+pre-commit:
+  parallel: true
+  commands:
+    shellcheck:
+      glob: "**/*.sh"
+      run: |
+        if command -v shellcheck >/dev/null 2>&1; then
+          shellcheck {staged_files} || {
+            echo "❌ ShellCheck failed"
+            echo "Fix errors or add # shellcheck disable=SCXXXX with justification"
+            exit 1
+          }
+        else
+          echo "⚠️  shellcheck not installed - skipping"
+        fi
+    
+    bash-syntax:
+      glob: "**/*.sh"
+      run: |
+        for file in {staged_files}; do
+          bash -n "$file" || {
+            echo "❌ Bash syntax error in $file"
+            exit 1
+          }
+        done
+    
+    nix-check:
+      glob: "home/**/*.nix"
+      run: |
+        if command -v nix-instantiate >/dev/null 2>&1; then
+          for file in {staged_files}; do
+            nix-instantiate --parse "$file" > /dev/null || {
+              echo "❌ Nix syntax error in $file"
+              exit 1
+            }
+          done
+        else
+          echo "⚠️  nix-instantiate not available - skipping"
+        fi
+    
+    xml-validate:
+      glob: "profiles/**/config.kiwi.xml"
+      run: |
+        if command -v xmllint >/dev/null 2>&1; then
+          xmllint --noout {staged_files} || {
+            echo "❌ KIWI XML validation failed"
+            exit 1
+          }
+        else
+          echo "⚠️  xmllint not installed - skipping"
+        fi
+    
+    anti-patterns:
+      glob: "**/*.{sh,nix,md,xml}"
+      run: tools/validate/check-anti-patterns.sh
+    
+    executable-check:
+      glob: "scripts/**/*.sh"
+      run: |
+        for file in {staged_files}; do
+          if [ ! -x "$file" ]; then
+            echo "❌ Script not executable: $file"
+            echo "Run: chmod +x $file"
+            exit 1
+          fi
+        done
+
+pre-push:
+  parallel: false
+  commands:
+    validate-layers:
+      run: tools/validate/check-layer-assignments.sh
+    
+    docs-check:
+      run: |
+        today=$(date +%Y-%m-%d)
+        month=$(date +%Y-%m)
+        summary="docs/daily-summaries/$month/$today.md"
+        
+        if [ ! -f "$summary" ]; then
+          echo "⚠️  Consider creating daily summary: $summary"
+          echo "💡 Use: docs/templates/daily-summary-template.md"
+        fi

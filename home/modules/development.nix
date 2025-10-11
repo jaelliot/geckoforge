@@ -58,6 +58,12 @@
     eza
     htop
     ncdu
+
+    # Quality and validation tools
+    shellcheck      # Shell script linter (required for lefthook)
+    markdownlint-cli  # Markdown linter
+    # xmllint is part of libxml2 (usually pre-installed on openSUSE)
+    lefthook        # Git hooks manager
   ];
 
   programs.bash.shellAliases = {

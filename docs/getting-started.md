@@ -284,6 +284,65 @@ newgrp docker
 
 ---
 
+## Quality Gates (Lefthook)
+
+This repository uses [lefthook](https://github.com/evilmartians/lefthook) for automated quality checks.
+
+### Installation
+
+```bash
+# Via zypper (openSUSE)
+sudo zypper install lefthook
+
+# Or via Home-Manager (add to home/modules/development.nix)
+home.packages = with pkgs; [
+  lefthook
+  shellcheck
+  markdownlint-cli
+];
+```
+
+### Setup
+
+```bash
+# Install hooks
+lefthook install
+
+# Verify installation
+lefthook version
+```
+
+### Usage
+
+Hooks run automatically on commit and push. To run manually:
+
+```bash
+# Run pre-commit checks
+lefthook run pre-commit
+
+# Run pre-push checks  
+lefthook run pre-push
+
+# Run specific check
+lefthook run pre-commit --commands shellcheck
+```
+
+### Bypassing Hooks (Emergency Only)
+
+```bash
+# Skip all hooks (NOT RECOMMENDED)
+git commit --no-verify
+
+# Skip specific check
+LEFTHOOK_EXCLUDE=shellcheck git commit -m "WIP: prototype"
+
+# Document bypasses in daily summary!
+```
+
+See `.cursor/rules/25-lefthook-quality.mdc` for full quality gate documentation.
+
+---
+
 ## Next Steps
 
 1. Customize KDE: Right-click desktop → Configure
