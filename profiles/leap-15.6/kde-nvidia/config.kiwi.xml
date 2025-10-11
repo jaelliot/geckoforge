@@ -53,6 +53,8 @@
     <package>kwalletmanager</package>
     <package>bluedevil5</package>
     <package>bash-completion</package>
+    <package>zsh</package>
+    <package>zsh-completions</package>
     <package>curl</package>
     <package>vim</package>
   </packages>

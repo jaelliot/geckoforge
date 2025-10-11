@@ -343,6 +343,146 @@ See `.cursor/rules/25-lefthook-quality.mdc` for full quality gate documentation.
 
 ---
 
+## Shell Configuration
+
+### DevOps-Optimized Zsh
+
+Geckoforge uses **zsh** with **Oh My Zsh** and **Powerlevel10k** for a powerful DevOps terminal experience.
+
+**Features:**
+- **Instant prompt** - Shell appears immediately, loads config in background
+- **Autosuggestions** - Commands from history appear as you type (press `→` to accept)
+- **Syntax highlighting** - Invalid commands show in red before you execute
+- **DevOps plugins** - Native completion for kubectl, terraform, docker, aws
+- **fzf integration** - Press `Ctrl+R` for fuzzy history search
+- **Context-aware prompt** - Current kubectl context, AWS profile, Terraform workspace
+- **Safety coloring** - Production contexts appear RED, staging YELLOW
+- **Large history** - 50,000 commands with deduplication
+- **Privacy mode** - Space-prefixed commands excluded from history
+
+### Activating Zsh
+
+After first boot, change your default shell:
+
+```bash
+# Change default shell to zsh
+./scripts/setup-shell.sh
+
+# Log out and back in
+# (Ctrl+D or close terminal)
+
+# After logging back in, activate Oh My Zsh configuration
+cd ~/git/home
+home-manager switch --flake .
+
+# Start a new terminal to see the Powerlevel10k prompt
+```
+
+### Using Autosuggestions
+
+As you type commands, zsh suggests from your history in gray text:
+
+```bash
+# You type: kubect
+# Suggestion appears: kubectl get pods -n production
+# Press → (right arrow) to accept the full suggestion
+# Or press Alt+F to accept word-by-word
+```
+
+**Tips:**
+- Suggestions are based on your most recent matching commands
+- Works great for long Docker/Kubernetes commands
+- Press `Tab` for traditional completion if you don't want history
+
+### Using fzf History Search
+
+Press `Ctrl+R` to open fuzzy finder for your command history:
+
+```bash
+# Press Ctrl+R
+# Type: docker run
+# See ALL matching commands from history
+# Navigate with arrow keys, press Enter to select
+```
+
+**Other fzf shortcuts:**
+- `Ctrl+T` - Fuzzy find files in current directory
+- `Alt+C` - Fuzzy find and cd into directory
+
+### Privacy & Security
+
+**Sensitive commands:** Prefix with space to exclude from history:
+
+```bash
+# This WILL be saved to history:
+aws configure set region us-east-1
+
+# This WON'T be saved (note the leading space):
+ aws configure set aws_access_key_id AKIA...
+ export DATABASE_PASSWORD=secret123
+```
+
+**Context awareness:** The prompt shows your kubectl context and AWS profile. Production contexts appear in **RED** as a visual warning.
+
+### DevOps Plugin Reference
+
+**kubectl plugin:**
+- `k` - Alias for `kubectl`
+- `kgp` - Get pods
+- `kgd` - Get deployments
+- Tab completion for resources, namespaces, contexts
+
+**docker plugin:**
+- `dps` - `docker ps`
+- `dex` - `docker exec -it`
+- Tab completion for containers, images
+
+**terraform plugin:**
+- `tf` - Alias for `terraform`
+- Tab completion for commands, workspaces
+
+**aws plugin:**
+- Tab completion for AWS CLI commands
+- Profile completion
+
+After first boot, change your default shell:
+
+```bash
+# Change default shell to zsh
+./scripts/setup-shell.sh
+
+# Log out and back in
+
+# Activate Oh My Zsh configuration
+cd ~/git/home
+home-manager switch --flake .
+```
+
+### Customizing Powerlevel10k
+
+Edit `~/.p10k.zsh` (managed by Home-Manager) or run:
+
+```bash
+p10k configure
+```
+
+Configuration is stored in `home/modules/shell.nix` for version control.
+
+### AWS CLI
+
+Default AWS configuration:
+- **Region:** us-east-1
+- **Output:** json
+
+Configure credentials:
+
+```bash
+aws configure
+# Enter AWS Access Key ID and Secret Access Key
+```
+
+---
+
 ## Next Steps
 
 1. Customize KDE: Right-click desktop → Configure
