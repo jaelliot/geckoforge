@@ -390,6 +390,369 @@ elixir --version
 # Update documentation
 ```
 
+## Upgrade and Migration Procedures
+
+### Philosophy
+
+**Test everything in VM first. Never upgrade production directly.**
+
+---
+
+## openSUSE Leap Version Upgrades
+
+### Preparation (1 week before)
+
+1. **Backup everything**
+   ```bash
+   # Create Btrfs snapshot
+   sudo snapper create --description "Before Leap 15.7 upgrade"
+   
+   # Backup to external HDD
+   ./scripts/backup-to-hdd.sh
+   
+   # Backup to cloud
+   ./scripts/backup-to-cloud.sh
+   ```
+
+2. **Check compatibility**
+   - Verify NVIDIA driver support for new Leap version
+   - Check if any installed packages will be removed
+   - Review release notes: https://doc.opensuse.org/release-notes/
+
+3. **Build test ISO with new version**
+   ```bash
+   # Update KIWI config
+   $EDITOR profiles/leap-15.6/kde-nvidia/config.kiwi.xml
+   # Change repos to 15.7
+   
+   # Build test ISO
+   ./tools/kiwi-build.sh profiles/leap-15.7/kde-nvidia
+   
+   # Test in VM for 1 week
+   ./tools/test-iso.sh out/geckoforge-leap157-*.iso
+   ```
+
+### Upgrade Procedure (In-Place)
+
+**Warning**: In-place upgrades are risky. Clean install recommended.
+
+```bash
+# Update current system first
+sudo zypper refresh
+sudo zypper update
+
+# Add new Leap 15.7 repos
+sudo zypper ar http://download.opensuse.org/distribution/leap/15.7/repo/oss/ leap157-oss
+sudo zypper ar http://download.opensuse.org/distribution/leap/15.7/repo/non-oss/ leap157-non-oss
+
+# Disable old repos
+sudo zypper mr -d leap156-oss
+sudo zypper mr -d leap156-non-oss
+
+# Perform distribution upgrade
+sudo zypper dup --allow-vendor-change
+
+# Reboot
+sudo reboot
+
+# Verify
+cat /etc/os-release
+# Should show Leap 15.7
+```
+
+### Rollback (If Upgrade Fails)
+
+```bash
+# Boot from Btrfs snapshot
+# At GRUB, select snapshot from before upgrade
+
+# Or manually rollback
+sudo snapper rollback <snapshot-number>
+sudo reboot
+```
+
+### Recommended: Clean Install
+
+Instead of in-place upgrade:
+1. Build new ISO for Leap 15.7
+2. Test in VM
+3. Test on laptop (1-2 weeks)
+4. Back up data
+5. Clean install on desktop
+6. Restore data
+
+---
+
+## Home-Manager (Nix) Updates
+
+### Monthly Updates (Routine)
+
+```bash
+cd ~/git/home
+
+# Update flake inputs
+nix flake update
+
+# Preview changes
+nix flake show
+
+# Apply updates
+home-manager switch --flake .
+
+# If issues, rollback
+home-manager rollback
+```
+
+### Major nixpkgs Version Update (e.g., 24.05 → 24.11)
+
+```bash
+cd ~/git/home
+
+# Before: Pin current working version
+git add flake.lock
+git commit -m "checkpoint: working config on nixpkgs-24.05"
+
+# Update to new release
+$EDITOR home/flake.nix
+# Change: nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+
+# Update and test
+nix flake update
+home-manager switch --flake . --show-trace
+
+# Check for broken packages
+# Fix any issues
+
+# Commit new config
+git add flake.nix flake.lock
+git commit -m "upgrade: nixpkgs 24.05 → 24.11"
+```
+
+### Handling Breaking Changes
+
+```bash
+# If home-manager switch fails:
+
+# 1. Check build log
+home-manager switch --flake . --show-trace 2>&1 | tee build.log
+
+# 2. Identify broken package
+grep "error:" build.log
+
+# 3. Options:
+# a) Remove broken package temporarily
+$EDITOR home/modules/problematic.nix
+# Comment out broken package
+
+# b) Pin package to older version
+# In flake.nix:
+packages = [
+  (import nixpkgs-old { inherit system; }).broken-package
+];
+
+# c) Wait for fix in nixpkgs-unstable
+# d) Build from source if critical
+```
+
+---
+
+## Docker Updates
+
+### Docker Engine Updates
+
+```bash
+# Check current version
+docker --version
+
+# Update via zypper
+sudo zypper refresh
+sudo zypper update docker
+
+# Restart daemon
+sudo systemctl restart docker
+
+# Verify
+docker run hello-world
+```
+
+### NVIDIA Container Toolkit Updates
+
+```bash
+# Update toolkit
+sudo zypper refresh
+sudo zypper update nvidia-container-toolkit
+
+# Reconfigure
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+
+# Verify
+docker run --rm --gpus all nvidia/cuda:12.4.0-base nvidia-smi
+```
+
+---
+
+## NVIDIA Driver Updates
+
+### Minor Updates (Automatic)
+
+```bash
+# Via zypper patches
+sudo zypper patch
+
+# Reboot if kernel modules updated
+sudo reboot
+```
+
+### Major Version Updates (e.g., 550 → 555)
+
+```bash
+# Backup current driver version
+nvidia-smi  # Note version
+
+# Create snapshot
+sudo snapper create --description "Before NVIDIA 555"
+
+# Update
+sudo zypper refresh
+sudo zypper update nvidia-open-driver-G06-signed
+
+# Reboot
+sudo reboot
+
+# Verify
+nvidia-smi
+
+# If issues, rollback snapshot
+```
+
+---
+
+## Migration to New Hardware
+
+### Same Architecture (AMD → AMD, Intel → Intel)
+
+1. **Build fresh ISO** (latest geckoforge)
+2. **Install on new hardware**
+3. **Restore from backup**:
+   ```bash
+   # Git configs
+   git clone https://github.com/user/geckoforge.git ~/git/geckoforge
+   
+   # Home-Manager
+   cd ~/git/geckoforge/home
+   home-manager switch --flake .
+   
+   # User data
+   ./scripts/restore-from-hdd.sh
+   # or
+   ./scripts/restore-from-cloud.sh
+   ```
+
+### Different Architecture (AMD → Intel)
+
+**Changes needed**:
+- KIWI profile might need different kernel packages
+- NVIDIA driver usually same
+- CPU-specific optimizations in Home-Manager
+
+**Process**:
+1. Test ISO in VM with emulated target CPU
+2. Adjust if needed
+3. Build new ISO
+4. Follow same migration as above
+
+---
+
+## Breaking Change Checklist
+
+Before making breaking changes:
+- [ ] Document current working state in daily summary
+- [ ] Create Btrfs snapshot
+- [ ] Commit current config to Git
+- [ ] Test in VM first
+- [ ] Have rollback plan ready
+- [ ] Schedule during low-priority time
+- [ ] Keep old ISO available
+
+---
+
+## Version Compatibility Matrix
+
+### Tested Configurations
+
+| Component | Version | Status | Notes |
+|-----------|---------|--------|-------|
+| openSUSE Leap | 15.6 | ✅ Stable | Current production |
+| openSUSE Leap | 15.7 | 🚧 Testing | VM only |
+| nixpkgs | 24.05 | ✅ Stable | Current production |
+| nixpkgs | 24.11 | 🚧 Testing | VM only |
+| NVIDIA Driver | 550.x | ✅ Stable | Open kernel modules |
+| Docker | 24.x | ✅ Stable | Current |
+| Home-Manager | 24.05 | ✅ Stable | Matches nixpkgs |
+
+### Known Incompatibilities
+
+- **Leap 15.6 + nixpkgs unstable**: May have glibc version conflicts
+- **Old NVIDIA (< 525) + New Kernels**: Use newer driver
+- **Docker < 20 + NVIDIA Toolkit**: Update Docker first
+
+---
+
+## Migration Timeline Example
+
+### openSUSE Leap 15.6 → 15.7
+
+**Month 1**: Preparation
+- Week 1: Review release notes
+- Week 2: Update KIWI profile for 15.7
+- Week 3: Build test ISO
+- Week 4: Test in VM
+
+**Month 2**: Testing
+- Week 1-2: Daily use in VM
+- Week 3: Deploy to laptop
+- Week 4: Monitor laptop for issues
+
+**Month 3**: Production
+- Week 1: Final backup
+- Week 2: Deploy to desktop
+- Week 3-4: Monitor production
+
+---
+
+## Emergency Rollback Plan
+
+### If Production System Breaks
+
+1. **Don't panic**
+   ```bash
+   # Boot from snapshot (at GRUB)
+   # Or boot from USB
+   ```
+
+2. **Diagnose**
+   ```bash
+   sudo journalctl -b -p err
+   # Identify what broke
+   ```
+
+3. **Quick fix or full rollback**
+   ```bash
+   # Quick fix: Uninstall problematic package
+   sudo zypper remove broken-package
+   
+   # Full rollback: Use Btrfs snapshot
+   sudo snapper rollback <snapshot-number>
+   sudo reboot
+   ```
+
+4. **Document**
+   ```bash
+   # Write to daily summary what failed
+   # Prevent future occurrence
+   ```
+
 ---
 
 ## Bug Reporting Template

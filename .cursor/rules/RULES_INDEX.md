@@ -6,10 +6,15 @@
 | 05-project-overview.mdc       | Agent Requested | n/a                                                                                    | High-level project context, goals, and target platform                            | 0.3.0   |
 | 10-kiwi-architecture.mdc      | Auto Attached   | profiles/**/* , tools/**/* , scripts/**/*                                             | KIWI image builder 4-layer architecture and layer responsibilities                | 0.3.0   |
 | 20-nix-home-manager.mdc       | Auto Attached   | home/**/*.nix, profiles/**/firstboot-nix.sh                                           | Nix and Home-Manager patterns, module organization, package management            | 0.3.0   |
+| 25-lefthook-quality.mdc       | Auto Attached   | lefthook.yml, **/*.sh, **/*.nix, **/*.xml, **/*.md                                    | Pre-commit and pre-push quality gates with lefthook automation                    | 0.3.0   |
 | 30-container-runtime.mdc      | Auto Attached   | scripts/*docker*.sh, scripts/firstrun-user.sh, docs/*docker*.md, scripts/examples/** | Docker-only container runtime with NVIDIA GPU support policies                    | 0.3.0   |
 | 40-documentation.mdc          | Agent Requested | docs/**/*.md, README.md, **/*.md                                                       | Documentation governance, structure, and daily summary requirements               | 0.3.0   |
-| 50-testing-deployment.mdc     | Agent Requested | tools/**/* , scripts/**/* , docs/testing-plan.md                                      | Three-phase testing strategy and deployment verification procedures               | 0.3.0   |
+| 50-testing-deployment.mdc     | Agent Requested | tools/**/* , scripts/**/* , docs/testing-plan.md                                      | Three-phase testing strategy, deployment verification, and upgrade procedures     | 0.3.0   |
+| 55-networking-privacy.mdc     | Auto Attached   | scripts/*vpn*.sh, scripts/*dns*.sh, home/modules/*network*.nix                        | VPN (ProtonVPN) and privacy-respecting DNS configuration                          | 0.3.0   |
 | 60-package-management.mdc     | Auto Attached   | profiles/**/*.xml, home/**/*.nix, scripts/**/*.sh                                     | Package source selection (zypper/Nix/Flatpak) and verification procedures         | 0.3.0   |
+| 65-backup-restore.mdc         | Auto Attached   | scripts/*backup*.sh, home/modules/*backup*.nix, .rclone.conf                          | Backup strategies with rclone encryption, external HDDs, and restore procedures   | 0.3.0   |
+| 70-troubleshooting.mdc        | Agent Requested | docs/troubleshooting/**/*.md                                                           | Systematic troubleshooting procedures organized by component and layer            | 0.3.0   |
+| 75-ide-config.mdc             | Auto Attached   | scripts/*ide*.sh, home/modules/*ide*.nix                                               | IDE configuration backup and sync for VS Code, Cursor, Kiro, and Void             | 0.3.0   |
 | RULES_INDEX.md                | Always          | n/a                                                                                    | This file - index of all rules with metadata                                      | 0.3.0   |
 
 ---
@@ -23,6 +28,9 @@
 ---
 
 ## Quick Reference by Use Case
+
+### Setting Up Quality Gates
+→ `25-lefthook-quality.mdc` (install lefthook, create validation scripts)
 
 ### Adding Packages
 → `60-package-management.mdc` + `10-kiwi-architecture.mdc`
@@ -41,6 +49,24 @@
 
 ### Documentation
 → `40-documentation.mdc` (daily summaries, structure)
+
+### Networking/VPN
+→ `55-networking-privacy.mdc` (ProtonVPN, Quad9 DNS)
+
+### Backup/Restore
+→ `65-backup-restore.mdc` (rclone, external HDDs)
+
+### Troubleshooting
+→ `70-troubleshooting.mdc` (systematic debugging by layer)
+
+### IDE Setup
+→ `75-ide-config.mdc` (VS Code, Cursor, Kiro, Void)
+
+### Laptop Deployment
+→ `10-kiwi-architecture.mdc` (laptop-specific patterns section)
+
+### System Upgrades
+→ `50-testing-deployment.mdc` (upgrade/migration procedures)
 
 ---
 

@@ -265,6 +265,187 @@ profiles/leap-15.6/kde-nvidia/
 
 ---
 
+## Laptop-Specific Patterns (Desktop Prioritized)
+
+**Note**: geckoforge is primarily designed for desktop workstations (130GB RAM, AMD Ryzen, NVIDIA GPU). Laptop support is secondary but validated on two NVIDIA laptops.
+
+### Power Management (Layer 1 + 3)
+
+#### TLP Installation (Layer 1: KIWI)
+
+```xml
+<!-- profiles/leap-15.6/kde-nvidia/config.kiwi.xml -->
+<packages type="image">
+  <package>tlp</package>
+  <package>tlp-rdw</package>  <!-- For NetworkManager integration -->
+</packages>
+```
+
+#### TLP Configuration (Layer 3: User Setup)
+
+```bash
+# scripts/setup-laptop-power.sh
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[laptop] Configuring power management..."
+
+# Enable TLP
+sudo systemctl enable tlp
+sudo systemctl start tlp
+
+# TLP configuration for NVIDIA laptops
+sudo tee /etc/tlp.conf <<EOF
+# Battery thresholds (if supported)
+START_CHARGE_THRESH_BAT0=40
+STOP_CHARGE_THRESH_BAT0=80
+
+# CPU scaling governor
+CPU_SCALING_GOVERNOR_ON_AC=performance
+CPU_SCALING_GOVERNOR_ON_BAT=powersave
+
+# NVIDIA runtime power management
+RUNTIME_PM_ON_BAT=auto
+
+# USB autosuspend
+USB_AUTOSUSPEND=1
+
+# Wireless power saving
+WIFI_PWR_ON_AC=off
+WIFI_PWR_ON_BAT=on
+EOF
+
+echo "[laptop] Power management configured"
+echo "Check status: sudo tlp-stat"
+```
+
+### Battery Optimization
+
+#### Best Practices
+- **80% charge limit** (if hardware supports) - extends battery life
+- **powersave governor on battery** - reduces CPU power
+- **Performance mode when plugged in** - full desktop experience
+
+#### Monitor Battery Health
+```bash
+# Check battery status
+tlp-stat -b
+
+# Check power consumption
+sudo powertop
+```
+
+### Suspend/Resume (Layer 2: First-Boot)
+
+#### NVIDIA Suspend Hook (if needed)
+
+```bash
+# profiles/leap-15.6/kde-nvidia/root/etc/systemd/system/nvidia-suspend.service
+[Unit]
+Description=NVIDIA GPU suspend helper
+Before=sleep.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/nvidia-sleep.sh suspend
+
+[Install]
+WantedBy=sleep.target
+```
+
+```bash
+# profiles/leap-15.6/kde-nvidia/root/usr/bin/nvidia-sleep.sh
+#!/bin/bash
+case "$1" in
+    suspend|hibernate)
+        # Save GPU state
+        /usr/bin/nvidia-smi -pm 0
+        ;;
+    resume|thaw)
+        # Restore GPU state
+        /usr/bin/nvidia-smi -pm 1
+        ;;
+esac
+```
+
+### Hybrid Graphics (Intel + NVIDIA)
+
+#### PRIME Offload (if laptop has Intel iGPU)
+
+```bash
+# Use Intel for desktop, NVIDIA for specific apps
+# No configuration needed - works by default on openSUSE
+
+# Run app with NVIDIA:
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia app-name
+
+# Or create desktop entry:
+cat > ~/.local/share/applications/app-nvidia.desktop <<EOF
+[Desktop Entry]
+Name=App (NVIDIA)
+Exec=env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia app-name
+EOF
+```
+
+### Laptop Hardware Quirks
+
+#### Touchpad Configuration
+```bash
+# KDE Plasma settings
+kwriteconfig5 --file touchpadxlibinputrc --group "Alps Touchpad" --key "TapToClick" true
+```
+
+#### Brightness Control
+```bash
+# Usually works out of box
+# If not, add kernel parameter:
+# acpi_backlight=vendor
+```
+
+#### Function Keys
+```bash
+# Fn keys should work by default
+# If swapped, toggle in BIOS
+```
+
+### Testing Checklist (Laptop-Specific)
+
+After deploying to laptop:
+- [ ] Battery indicator shows correct percentage
+- [ ] Suspend works (close lid)
+- [ ] Resume works (open lid)
+- [ ] Brightness controls work (Fn+F5/F6)
+- [ ] Volume controls work (Fn+F7/F8)
+- [ ] WiFi toggles work
+- [ ] Touchpad works
+- [ ] External monitor detection
+- [ ] HDMI/DisplayPort works
+- [ ] USB ports work
+- [ ] Webcam works (if needed)
+- [ ] Microphone works
+- [ ] NVIDIA GPU accessible (`nvidia-smi`)
+- [ ] Battery lasts reasonable time (>3 hours light use)
+
+### Known Limitations (Laptop)
+
+- **Desktop prioritized**: Some optimizations favor desktop (e.g., no aggressive power saving by default)
+- **NVIDIA battery drain**: Discrete GPU uses more power than iGPU
+- **Testing**: Laptop configurations tested less frequently than desktop
+
+### When to Use Laptop Build
+
+Use the same ISO for both desktop and laptop. Laptop-specific configuration happens at Layer 3 (user setup):
+
+```bash
+# Detect if laptop
+if [ -d /sys/class/power_supply/BAT* ]; then
+    echo "Laptop detected"
+    ./scripts/setup-laptop-power.sh
+else
+    echo "Desktop detected - skipping laptop config"
+fi
+```
+
 ## Verification Checklist
 
 Before committing changes:
