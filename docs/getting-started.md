@@ -203,17 +203,63 @@ Configures:
 
 ---
 
-## Step 10: Set Up Backups
+## Step 10: Set Up Encrypted Cloud Backups
 
-See [Backup & Restore](backup-restore.md).
+Geckoforge includes a comprehensive encrypted backup system for DevOps workflows.
 
-**Quick start**:
+### Quick Setup
+
 ```bash
-sudo zypper install restic
-restic init --repo /mnt/backup/restic
-# Copy backup script from docs/backup-restore.md
-systemctl --user enable --now backup.timer
+cd ~/git/geckoforge
+
+# Configure cloud provider and encryption
+./scripts/setup-rclone.sh
+
+# Test backup system
+./scripts/check-backups.sh --test
+
+# Enable automated backups
+systemctl --user enable --now rclone-backup-critical.timer
+systemctl --user enable --now rclone-backup-projects.timer
+
+# Verify operation
+systemctl --user list-timers
 ```
+
+### What Gets Backed Up
+
+- **Critical (Daily)**: SSH keys, GPG keys, AWS credentials, Kubernetes configs, documents
+- **Projects (Weekly)**: Git repositories, development workspaces, VS Code settings
+- **Infrastructure (Monthly)**: Infrastructure as Code, Ansible playbooks, Terraform configs
+
+### Cloud Provider Options
+
+1. **Google Drive**: 15GB free, good for personal use
+2. **AWS S3**: Pay-as-you-go, best for professional use
+3. **Backblaze B2**: Cheaper alternative to S3
+4. **OneDrive**: If you have O365 subscription
+
+### Security Features
+
+- **Zero-knowledge encryption**: Data encrypted client-side before upload
+- **AES-256 encryption**: Industry-standard encryption strength
+- **Filename obfuscation**: Even file names are encrypted
+- **Password protection**: Dual-password system (encryption + salt)
+
+### Monitoring
+
+```bash
+# Health check
+./scripts/check-backups.sh
+
+# View backup logs
+ls ~/.local/share/rclone/logs/
+
+# Service status
+systemctl --user status rclone-backup-critical.service
+```
+
+**Complete guide**: [Backup & Recovery Documentation](backup-recovery.md)
 
 ---
 

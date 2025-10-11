@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./modules/backup.nix
     ./modules/cli.nix
     ./modules/desktop.nix
     ./modules/development.nix
