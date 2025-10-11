@@ -1,70 +1,36 @@
-<!-- @file README.md --># 🦎 Geckoforge
-
+<!-- @file README.md -->
 <!-- @description Main project documentation for geckoforge - openSUSE Leap 15.6 + KDE + NVIDIA custom distribution -->
+<!-- @update-policy Update when major features are added, architecture changes, or project goals evolve -->
 
-<!-- @update-policy Update when major features are added, architecture changes, or project goals evolve -->**Reproducible, production-grade KDE Plasma desktop for openSUSE Leap 15.6**
+<div align="center">
 
+# 🦎 Geckoforge
 
+**A custom openSUSE Leap 15.6 distribution built with KIWI NG**
 
-<div align="center">Built with KIWI NG + Nix + Docker for maximum stability and GPU-accelerated AI workloads.
+*Professional workstation image with KDE Plasma, NVIDIA GPU support, and declarative configuration*
 
-
-
-# 🦎 Geckoforge![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)
-
-![openSUSE](https://img.shields.io/badge/openSUSE-Leap%2015.6-73BA25.svg)
-
-**A custom openSUSE Leap 15.6 distribution built with KIWI NG**![Desktop](https://img.shields.io/badge/desktop-KDE%20Plasma-1D99F3.svg)
-
-
-
-*Professional workstation image with KDE Plasma, NVIDIA GPU support, and declarative configuration*---
-
-
-
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)## ✨ Features
-
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![openSUSE Leap 15.6](https://img.shields.io/badge/openSUSE-Leap%2015.6-73ba25?logo=opensuse)](https://www.opensuse.org/)
+[![KDE Plasma](https://img.shields.io/badge/KDE-Plasma%205-1d99f3?logo=kde)](https://kde.org/plasma-desktop/)
+[![Built with KIWI](https://img.shields.io/badge/built%20with-KIWI%20NG-orange)](https://osinside.github.io/kiwi/)
 
-[![KDE Plasma](https://img.shields.io/badge/KDE-Plasma%205-1d99f3?logo=kde)](https://kde.org/plasma-desktop/)- 🔒 **Secure by default**: LUKS2 encryption, Secure Boot, AppArmor, firewalld
+[Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Architecture](#-architecture) • [Contributing](#-contributing)
 
-[![Built with KIWI](https://img.shields.io/badge/built%20with-KIWI%20NG-orange)](https://osinside.github.io/kiwi/)- 📸 **Instant rollbacks**: Btrfs + Snapper (OS) + Nix generations (apps)
+</div>
 
-- 🎮 **GPU containers**: NVIDIA driver + Container Toolkit with CDI
+---
 
-[Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Architecture](#-architecture) • [Contributing](#-contributing)- 🔄 **Fully reproducible**: Everything in Git, rebuild ISO anytime
+## 🎯 Overview
 
-- 🐳 **Docker + NVIDIA**: Daemon-based runtime with toolkit + CDI for GPU workloads
+Geckoforge is a **four-layer reproducible workstation image** targeting developers, data scientists, and power users who need:
 
-</div>- 🧱 **Multi-language dev stack**: TypeScript, Go, Python, Nim, C#, R, and Elixir via asdf
+**"Configure once, avoid BS forever"** workstation for:
 
-- 🖨️ **TeX Live scheme-medium**: Stable 2 GB distribution tuned for Leap 15.6
-
----- 🖥️ **KDE Plasma**: Modern, customizable, lightweight desktop
-
-
-
-## 🎯 Overview---
-
-
-
-Geckoforge is a **four-layer reproducible workstation image** targeting developers, data scientists, and power users who need:## 🎯 Use Case
-
-
-
-✅ **NVIDIA GPU support** out-of-the-box (Docker + CUDA)  **"Configure once, avoid BS forever"** workstation for:
-
-✅ **Professional theming** with Mystical Blue aesthetic  
-
-✅ **Declarative configuration** via Nix Home-Manager  - **AI/ML development**: GPU containers for PyTorch, TensorFlow, CUDA
-
-✅ **Multi-machine workflows** with KVM switching (Synergy)  - **Software engineering**: Reproducible dev environments via Nix
-
-✅ **Developer toolchains** (Python, Node.js, Go, Elixir, Nim, R, .NET)  - **Content creation**: OBS with NVENC, Kdenlive, GIMP
-
-✅ **Encrypted backups** with rclone and cloud storage  - **Daily driver**: Replacing Windows 10 with rock-solid Linux
-
-✅ **Zero-drift philosophy**: *"Configure once, avoid BS forever"*
+- **AI/ML development**: GPU containers for PyTorch, TensorFlow, CUDA
+- **Software engineering**: Reproducible dev environments via Nix
+- **Content creation**: OBS with NVENC, Kdenlive, GIMP
+- **Daily driver**: Replacing Windows 10 with rock-solid Linux
 
 **Hardware**: Powerful workstations/laptops with NVIDIA GPUs
 
@@ -72,326 +38,164 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 
 ---
 
+## ✨ Features
+
+### 🎨 Visual Polish
+
+- **Mystical Blue (Jux) Theme** - Professional dark blue aesthetic
+  - JuxPlasma desktop theme with modern panels
+  - JuxDeco window decorations with rounded corners
+  - NoMansSkyJux Kvantum Qt theme for unified app styling
+  - System-wide color coordination
+- **One-command activation** - `./scripts/setup-jux-theme.sh`
+- **Declarative theming** - Optional Home-Manager configuration
+
+### 🚀 GPU-Ready Docker
+
+- **Docker Engine** with NVIDIA Container Toolkit
+- **Automatic GPU detection** and configuration
+- **Verified installation** - Tests GPU access in containers
+- **Production-ready** - No manual driver management
+- **CDI support** - Container Device Interface for resource allocation
+
+### 🖥️ Multi-Machine KVM
+
+- **Synergy 3 support** - Share keyboard/mouse across computers
+- **Input Leap alternative** - FOSS option with better Wayland support
+- **Automated setup** - Firewall, systemd service, configuration
+- **Client & server modes** - Flexible workspace layouts
+- **Interactive wizard** - `./scripts/setup-synergy.sh`
+
+### 🏠 Declarative Home Environment
+
+- **Nix Home-Manager** - Reproducible user configuration
+- **Version-pinned packages** - No dependency conflicts
+- **Shell configuration** - Zsh + Oh My Zsh + Powerlevel10k
+- **Development toolchains** - Multi-language support with asdf-vm
+- **Git-tracked configs** - Portable across machines
+
+### 💾 Encrypted Cloud Backups
+
+- **rclone integration** - Supports Google Drive, S3, OneDrive, Backblaze B2
+- **Zero-knowledge encryption** - Cloud provider cannot read backups
+- **Automated schedules** - Daily critical files, weekly projects
+- **systemd timers** - User-level automation
+- **Interactive setup** - `./scripts/setup-rclone.sh`
+
+### 🛠️ Developer Toolchains
+
+**Languages:**
+- Python 3.12 (with ruff, black, pytest)
+- Node.js (via asdf-vm)
+- Go, Nim, Elixir, R, .NET 9
+- LaTeX (TeX Live scheme-medium - 2GB stable distribution)
+
+**Tools:**
+- Docker + docker-compose with GPU support
+- Git with sensible defaults and delta pager
+- VS Code, Cursor, WebStorm (via script setup)
+- MongoDB Compass, DBeaver, Postman (Flatpak)
+
+### 🔒 System Resilience
+
+- **Btrfs filesystem** - Copy-on-write, compression, snapshots
+- **Snapper integration** - Automatic pre/post-update snapshots
+- **GRUB snapshot boot** - Rollback from boot menu
+- **Home-Manager generations** - Rollback user environment
+- **LUKS2 encryption** - Full-disk encryption with secure defaults
+
+### ⚡ Quality Gates
+
+- **Lefthook pre-commit** - Fast syntax checks (<30s)
+  - Shell script validation (shellcheck + bash -n)
+  - Nix expression evaluation
+  - Anti-pattern detection (Podman usage, wrong TeX scheme)
+- **Lefthook pre-push** - Thorough validation
+  - Layer boundary enforcement
+  - Package policy compliance
+  - Documentation synchronization
+
 ---
 
 ## 🚀 Quick Start
 
-## ✨ Features
+### Prerequisites
 
-### 1. Build ISO
+- **openSUSE Leap 15.6** (or compatible) for building
+- **KIWI NG** installed (`zypper install kiwi-ng`)
+- **NVIDIA GPU** (optional - detects and configures automatically)
+- **8+ GB RAM** and **50+ GB disk** for ISO build
 
-### 🎨 Visual Polish
-
-```bash
-
-- **Mystical Blue (Jux) Theme** - Professional dark blue aestheticgit clone https://github.com/jaelliot/geckoforge.git
-
-  - JuxPlasma desktop theme with modern panelscd geckoforge
-
-  - JuxDeco window decorations with rounded corners./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
-
-  - NoMansSkyJux Kvantum Qt theme for unified app styling```
-
-  - System-wide color coordination
-
-- **One-command activation** - `./scripts/setup-jux-theme.sh`**Output**: `out/geckoforge-leap156-kde.x86_64-*.iso`
-
-- **Declarative theming** - Optional Home-Manager configuration
-
-### 2. Install to Hardware
-
-### 🚀 GPU-Ready Docker
-
-1. Write ISO to USB
-
-- **Docker Engine** with NVIDIA Container Toolkit2. Boot from USB
-
-- **Automatic GPU detection** and configuration3. Install (enable LUKS encryption)
-
-- **Verified installation** - Tests GPU access in containers4. Reboot
-
-- **Production-ready** - No manual driver management
-
-- **CDI support** - Container Device Interface for resource allocation### 3. First Boot (Automatic)
-
-
-
-### 🖥️ Multi-Machine KVMSystem automatically:
-
-- Detects NVIDIA GPU → installs driver
-
-- **Synergy 3 support** - Share keyboard/mouse across computers- Installs Nix with flakes
-
-- **Input Leap alternative** - FOSS option with better Wayland support- Prompts for reboot
-
-- **Automated setup** - Firewall, systemd service, configuration
-
-- **Client & server modes** - Flexible workspace layouts### 4. User Setup (Manual)
-
-- **Interactive wizard** - `./scripts/setup-synergy.sh`
+### Build the ISO
 
 ```bash
+# Clone repository
+git clone https://github.com/jaelliot/geckoforge.git
+cd geckoforge
 
-### 🏠 Declarative Home Environmentgit clone https://github.com/jaelliot/geckoforge.git ~/git/geckoforge
+# Build ISO
+./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
 
-cd ~/git/geckoforge
+# ISO created in: out/geckoforge-leap156-kde.x86_64-*.iso
+```
 
-- **Nix Home-Manager** - Reproducible user configuration./scripts/firstrun-user.sh
+**Build time:** ~10-15 minutes (depending on network/CPU)
 
-- **Version-pinned packages** - No dependency conflicts```
+### Install to Hardware
 
-- **Shell configuration** - Zsh + Oh My Zsh + Powerlevel10k
+1. **Create bootable USB:**
+   ```bash
+   sudo dd if=out/geckoforge-*.iso of=/dev/sdX bs=4M status=progress
+   sync
+   ```
 
-- **Development toolchains** - Multi-language support with asdf-vmSee [Getting Started](docs/getting-started.md) for full guide.
+2. **Boot from USB** (disable Secure Boot temporarily)
 
-- **Git-tracked configs** - Portable across machines
+3. **Install** - Follow installer prompts
+   - Enable disk encryption (recommended)
+   - Set strong user password
+
+4. **First boot** - System automatically:
+   - Installs NVIDIA drivers (if GPU detected)
+   - Installs Nix package manager with flakes
+   - Prompts for reboot
+
+5. **User setup** - Run wizard:
+   ```bash
+   cd ~/git
+   git clone https://github.com/jaelliot/geckoforge.git
+   cd geckoforge
+   ./scripts/firstrun-user.sh
+   ```
+
+**Total time:** ~45 minutes (build + install + setup)
+
+**Next steps:** See [Getting Started Guide](docs/getting-started.md)
 
 ---
-
-### 💾 Encrypted Cloud Backups
 
 ## 📖 Documentation
 
-- **rclone integration** - Supports Google Drive, S3, OneDrive, Backblaze B2
-
-- **Zero-knowledge encryption** - Cloud provider cannot read backups| Guide | Description |
-
-- **Automated schedules** - Daily critical files, weekly projects|-------|-------------|
-
-- **systemd timers** - User-level automation| [Getting Started](docs/getting-started.md) | Installation & setup |
-
-- **Interactive setup** - `./scripts/setup-rclone.sh`| [Testing Plan](docs/testing-plan.md) | VM → Laptop → Production |
-
-| [Backup & Restore](docs/backup-restore.md) | Data safety |
-
-### 🛠️ Developer Toolchains| [Recovery](docs/recovery.md) | Rollback procedures |
-
-| [Podman → Docker Migration](docs/podman-to-docker-migration.md) | Rationale & command map |
-
-**Languages:**| [Docker + NVIDIA](docs/docker-nvidia.md) | GPU containers |
-
-- Python 3.12 (with ruff, black, pytest)| [TeX Verification](docs/tex-verification.md) | Validate TeX Live scheme-medium |
-
-- Node.js (via asdf-vm)| [OBS NVENC](docs/obs-nvenc-setup.md) | Hardware encoding |
-
-- Go, Nim, Elixir, R, .NET 9| [Btrfs Layout](docs/btrfs-layout.md) | Subvolume structure |
-
-- LaTeX (TeX Live scheme-medium - 2GB stable distribution)
-
----
-
-**Tools:**
-
-- Docker + docker-compose with GPU support## 🏗️ Architecture
-
-- Git with sensible defaults and delta pager
-
-- VS Code, Cursor, WebStorm (via script setup)### Three-Layer Package Management
-
-- MongoDB Compass, DBeaver, Postman (Flatpak)
-
-```
-
-### 🔒 System Resilience┌─────────────────────────────────────┐
-
-│ Layer 3: Flatpak (Sandboxed GUI)   │
-
-- **Btrfs filesystem** - Copy-on-write, compression, snapshots│ OBS, Signal, DBeaver, Postman, etc. │
-
-- **Snapper integration** - Automatic pre/post-update snapshots└─────────────────────────────────────┘
-
-- **GRUB snapshot boot** - Rollback from boot menu              ↓
-
-- **Home-Manager generations** - Rollback user environment┌─────────────────────────────────────┐
-
-- **LUKS2 encryption** - Full-disk encryption with secure defaults│ Layer 2: Nix (Reproducible Apps)    │
-
-│ Dev tools, CLI utils, pinned with   │
-
-### ⚡ Quality Gates│ flake.lock                          │
-
-└─────────────────────────────────────┘
-
-- **Lefthook pre-commit** - Fast syntax checks (<30s)              ↓
-
-  - Shell script validation (shellcheck + bash -n)┌─────────────────────────────────────┐
-
-  - Nix expression evaluation│ Layer 1: zypper (Base OS)           │
-
-  - Anti-pattern detection (Podman usage, wrong TeX scheme)│ Kernel, NVIDIA driver, systemd,     │
-
-- **Lefthook pre-push** - Thorough validation│ KDE Plasma                          │
-
-  - Layer boundary enforcement└─────────────────────────────────────┘
-
-  - Package policy compliance```
-
-  - Documentation synchronization
-
-**Why this works**:
-
----- **Leap 15.6**: Enterprise stability (18-month releases)
-
-- **Nix**: Reproducible environments, atomic upgrades
-
-## 🚀 Quick Start- **Flatpak**: Sandboxed apps, auto-updates
-
-- **Btrfs + Snapper**: Instant OS rollbacks
-
-### Prerequisites- **Secure Boot + LUKS2**: Security by default
-
-
-
-- **openSUSE Leap 15.6** (or compatible) for building---
-
-- **KIWI NG** installed (`zypper install kiwi-ng`)
-
-- **NVIDIA GPU** (optional - detects and configures automatically)## 🧪 Testing Status
-
-- **8+ GB RAM** and **50+ GB disk** for ISO build
-
-| Phase | Status |
-
-### Build the ISO|-------|--------|
-
-| ISO builds | ✅ |
-
-```bash| First-boot scripts | ✅ |
-
-# Clone repository| NVIDIA driver | ✅ |
-
-git clone https://github.com/jaelliot/geckoforge.git| Nix + Home-Manager | ✅ |
-
-cd geckoforge| GPU containers | ✅ |
-
-| Documentation | ✅ |
-
-# Build ISO| VM testing | 🔄 In progress |
-
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia| Laptop deployment | ⏸️ Pending |
-
-| Windows replacement | ⏸️ Pending |
-
-# ISO created in: out/geckoforge-leap156-kde.x86_64-*.iso
-
-```---
-
-
-
-**Build time:** ~10-15 minutes (depending on network/CPU)## 🛠️ Development
-
-
-
-### Install to Hardware### Build
-
-
-
-1. **Create bootable USB:**```bash
-
-   ```bash./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
-
-   sudo dd if=out/geckoforge-*.iso of=/dev/sdX bs=4M status=progress```
-
-   sync
-
-   ```### Test in VM
-
-
-
-2. **Boot from USB** (disable Secure Boot temporarily)```bash
-
-./tools/test-iso.sh
-
-3. **Install** - Follow installer prompts```
-
-   - Enable disk encryption (recommended)
-
-   - Set strong user password### Clean
-
-
-
-4. **First boot** - System automatically:```bash
-
-   - Installs NVIDIA drivers (if GPU detected)rm -rf out/ work/
-
-   - Installs Nix package manager with flakes```
-
-   - Prompts for reboot
-
----
-
-5. **User setup** - Run wizard:
-
-   ```bash## 📊 Roadmap
-
-   cd ~/git
-
-   git clone https://github.com/jaelliot/geckoforge.git- ✅ **v0.1.0**: Basic KIWI profile
-
-   cd geckoforge- ✅ **v0.2.0**: KDE + GPU containers + docs (current)
-
-   ./scripts/firstrun-user.sh- 🔜 **v0.3.0**: CI/CD automation
-
-   ```- 🔜 **v1.0.0**: Battle-tested on production hardware
-
-
-
-**Total time:** ~45 minutes (build + install + setup)---
-
-
-
-**Next steps:** See [Getting Started Guide](docs/getting-started.md)## 🤝 Contributing
-
-
-
----Personal project, but you're welcome to:
-
-- Fork for your own use
-
-## 📚 Documentation- Report bugs via Issues
-
-- Share feedback
-
 ### User Guides
 
----
-
 - **[Getting Started](docs/getting-started.md)** - Installation and initial setup
-
-- **[Docker + NVIDIA](docs/docker-nvidia.md)** - GPU container workflows## 📄 License
-
+- **[Docker + NVIDIA](docs/docker-nvidia.md)** - GPU container workflows
 - **[Themes](docs/themes.md)** - Theme activation and customization
-
-- **[Synergy Setup](docs/synergy-setup.md)** - Multi-machine KVM configurationApache 2.0 - See [LICENSE](LICENSE)
-
+- **[Synergy Setup](docs/synergy-setup.md)** - Multi-machine KVM configuration
 - **[Backup & Recovery](docs/backup-recovery.md)** - Cloud backups and system restore
+- **[Testing Plan](docs/testing-plan.md)** - Validation procedures
 
-- **[Testing Plan](docs/testing-plan.md)** - Validation procedures---
+### Architecture
 
+- **[Architecture Overview](docs/architecture/README.md)** - Four-layer design
+- **[Directory Structure](docs/architecture/directory-tree.md)** - Repository layout
+- **[Btrfs Layout](docs/btrfs-layout.md)** - Filesystem and snapshots
 
+### Development
 
-### Architecture## 🙏 Credits
-
-
-
-- **[Architecture Overview](docs/architecture/README.md)** - Four-layer design- [openSUSE Leap](https://www.opensuse.org/)
-
-- **[Directory Structure](docs/architecture/directory-tree.md)** - Repository layout- [KIWI NG](https://osinside.github.io/kiwi/)
-
-- **[Btrfs Layout](docs/btrfs-layout.md)** - Filesystem and snapshots- [Nix](https://nixos.org/) + [Home-Manager](https://github.com/nix-community/home-manager)
-
-- [Docker](https://www.docker.com/)
-
-### Development- [NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)
-
-
-
-- **[Daily Summaries](docs/daily-summaries/)** - Development log---
-
+- **[Daily Summaries](docs/daily-summaries/)** - Development log
 - **[Contributing](#-contributing)** - How to contribute
-
-- **[Cursor Rules](.cursor/rules/)** - AI assistant guidelines**Ready to replace Windows?** → [Get Started](docs/getting-started.md)
-
+- **[Cursor Rules](.cursor/rules/)** - AI assistant guidelines
 
 ---
 
@@ -418,6 +222,27 @@ Geckoforge uses a **four-layer architecture** for reproducibility and maintainab
 ┌─────────────────────────────────────┐
 │ Layer 1: ISO (KIWI profile)        │  Base OS, repositories, themes
 │ Immutable system image             │  Reproducible builds
+└─────────────────────────────────────┘
+```
+
+### Three-Layer Package Management
+
+```
+┌─────────────────────────────────────┐
+│ Layer 3: Flatpak (Sandboxed GUI)   │
+│ OBS, Signal, DBeaver, Postman, etc. │
+└─────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────┐
+│ Layer 2: Nix (Reproducible Apps)    │
+│ Dev tools, CLI utils, pinned with   │
+│ flake.lock                          │
+└─────────────────────────────────────┘
+              ↓
+┌─────────────────────────────────────┐
+│ Layer 1: zypper (Base OS)           │
+│ Kernel, NVIDIA driver, systemd,     │
+│ KDE Plasma                          │
 └─────────────────────────────────────┘
 ```
 
