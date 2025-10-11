@@ -203,7 +203,26 @@ Configures:
 
 ---
 
-## Step 10: Set Up Encrypted Cloud Backups
+## Step 10: Keyboard/Mouse Sharing (Optional)
+
+If you use Synergy to share keyboard/mouse across multiple computers:
+
+```bash
+cd ~/git/geckoforge
+./scripts/setup-synergy.sh
+```
+
+**Requirements:**
+- Synergy license from symless.com
+- Downloaded Synergy RPM
+
+The script will guide you through installation and configuration.
+
+**Time:** 5 minutes
+
+---
+
+## Step 11: Set Up Encrypted Cloud Backups
 
 Geckoforge includes a comprehensive encrypted backup system for DevOps workflows.
 
