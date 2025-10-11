@@ -1,17 +1,39 @@
 .
+├── .cursor
+│   └── rules
+│       ├── 00-style-canon.mdc
+│       ├── 05-project-overview.mdc
+│       ├── 10-kiwi-architecture.mdc
+│       ├── 20-nix-home-management.mdc
+│       ├── 25-lefthook-quality.mdc
+│       ├── 30-container-runtime.mdc
+│       ├── 40-documentation.mdc
+│       ├── 50-testing-deployment.mdc
+│       ├── 55-networking-privacy.mdc
+│       ├── 60-package-management.mdc
+│       ├── 65-backup-restore.mdc
+│       ├── 70-troubleshooting.mdc
+│       ├── 75-ide-config.mdc
+│       └── RULES_INDEX.md
+├── .vscode
+│   ├── instructions
+│   └── .gitkeep
 ├── home
 │   ├── modules
 │   │   ├── cli.nix
 │   │   ├── desktop.nix
 │   │   ├── development.nix
-│   │   └── elixir.nix
+│   │   ├── elixir.nix
+│   │   └── firefox.nix
 │   ├── flake.nix
 │   └── home.nix
 ├── profiles
-│   └── leap-15.6
-│       └── kde-nvidia
+│   └── leap-15.6
+│       └── kde-nvidia
 │           ├── root
 │           │   └── etc
+│           │       ├── firefox
+│           │       │   └── policies
 │           │       ├── snapper
 │           │       │   └── configs
 │           │       ├── systemd
@@ -32,19 +54,21 @@
 │   │   └── systemd-gpu-service
 │   │       ├── Makefile
 │   │       └── README.md
+│   ├── docker-nvidia-install.sh
+│   ├── docker-nvidia-verify.sh
 │   ├── firstrun-user.sh
 │   ├── harden.sh
 │   ├── install-flatpaks.sh
-│   ├── docker-nvidia-install.sh
-│   ├── docker-nvidia-verify.sh
+│   ├── make-executable.sh
 │   ├── prune-containers.service
 │   ├── prune-containers.timer
 │   ├── setup-chrome.sh
 │   └── setup-docker.sh
 ├── tools
-│   └── kiwi-build.sh
+│   ├── kiwi-build.sh
+│   └── test-iso.sh
 ├── .gitignore
 ├── LICENSE
 └── README.md
 
-20 directories, 25 files
+26 directories, 45 files
