@@ -222,7 +222,27 @@ The script will guide you through installation and configuration.
 
 ---
 
-## Step 11: Set Up Encrypted Cloud Backups
+## Step 11: Activate Theme (Optional)
+
+Geckoforge includes the **Mystical Blue (Jux)** theme - a professional dark blue aesthetic.
+
+**Activate the theme:**
+```bash
+cd ~/git/geckoforge
+./scripts/setup-jux-theme.sh
+```
+
+**Then:**
+- Log out and back in
+- Theme is active!
+
+**Time:** 2 minutes
+
+**Details:** See [Theme Guide](themes.md)
+
+---
+
+## Step 12: Set Up Encrypted Cloud Backups
 
 Geckoforge includes a comprehensive encrypted backup system for DevOps workflows.
 

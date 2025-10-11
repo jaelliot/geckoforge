@@ -62,6 +62,9 @@
     <package>noto-sans-fonts</package>
     <package>noto-emoji-fonts</package>
     <package>fontconfig</package>
+    <!-- Kvantum Qt theme engine for JuxTheme -->
+    <package>kvantum-qt5</package>
+    <package>kvantum-qt6</package>
   </packages>
 
   <!-- Docker is installed post-deployment via scripts/setup-docker.sh to ensure proper daemon configuration -->
@@ -76,5 +79,10 @@
     <file name="/etc/zypp/repos.d/nvidia.repo" mode="0644">root/etc/zypp/repos.d/nvidia.repo</file>
     <file name="/etc/snapper/configs/root" mode="0644">root/etc/snapper/configs/root</file>
     <file name="/etc/firefox/policies/policies.json" mode="0644">root/etc/firefox/policies/policies.json</file>
+    <!-- Mystical Blue (Jux) Theme Files -->
+    <archive name="/usr/share/aurorae/themes/JuxDeco" target="/" mode="0755">root/usr/share/aurorae/themes/JuxDeco</archive>
+    <archive name="/usr/share/plasma/desktoptheme/JuxPlasma" target="/" mode="0755">root/usr/share/plasma/desktoptheme/JuxPlasma</archive>
+    <archive name="/usr/share/Kvantum/NoMansSkyJux" target="/" mode="0755">root/usr/share/Kvantum/NoMansSkyJux</archive>
+    <file name="/usr/share/color-schemes/JuxTheme.colors" mode="0644">root/usr/share/color-schemes/JuxTheme.colors</file>
   </files>
 </image>

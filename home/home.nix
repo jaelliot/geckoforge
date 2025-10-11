@@ -8,6 +8,7 @@
     ./modules/development.nix
     ./modules/elixir.nix
     ./modules/firefox.nix
+    ./modules/kde-theme.nix
     ./modules/shell.nix
   ];
 

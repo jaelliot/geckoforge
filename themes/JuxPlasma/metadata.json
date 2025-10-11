@@ -1,0 +1,19 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "juxtopposed.contact@gmail.com",
+                "Name": "juxtopposed"
+            }
+        ],
+        "Category": "",
+        "Description": "Mystical Blue Theme, modified from 'Ned for Plasma",
+        "EnabledByDefault": true,
+        "Id": "JuxPlasma",
+        "License": "LGPL",
+        "Name": "JuxPlasma",
+        "Version": "1.0",
+        "Website": "juxtopposed.com"
+    },
+    "X-Plasma-API": "5.0"
+}
