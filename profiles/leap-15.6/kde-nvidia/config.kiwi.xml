@@ -57,6 +57,11 @@
     <package>zsh-completions</package>
     <package>curl</package>
     <package>vim</package>
+    <package>liberation-fonts</package>
+    <package>dejavu-fonts</package>
+    <package>noto-sans-fonts</package>
+    <package>noto-emoji-fonts</package>
+    <package>fontconfig</package>
   </packages>
 
   <!-- Docker is installed post-deployment via scripts/setup-docker.sh to ensure proper daemon configuration -->
