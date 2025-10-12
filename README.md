@@ -82,6 +82,14 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 - **systemd timers** - User-level automation
 - **Interactive setup** - `./scripts/setup-rclone.sh`
 
+### 📧 Hardened Email Client
+
+- **Mozilla Thunderbird** with anti-phishing configuration
+- **Clickable links disabled** by default (copy/paste URLs manually)
+- **Remote content blocked** - No tracking pixels or external images
+- **OAuth2 support** for Gmail/Outlook, ProtonMail Bridge compatible
+- **Plain text preference** - HTML rendering minimized for security
+
 ### 🛠️ Developer Toolchains
 
 **Languages:**

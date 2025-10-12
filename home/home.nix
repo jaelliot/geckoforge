@@ -10,6 +10,7 @@
     ./modules/firefox.nix
     ./modules/kde-theme.nix
     ./modules/shell.nix
+    ./modules/thunderbird.nix
   ];
 
   home.username = "jay";
@@ -22,6 +23,15 @@
     enable = true;
     userName = "Jay";
     userEmail = "jay@example.com";
+  };
+
+  # Hardened Thunderbird email client
+  programs.thunderbird-hardened = {
+    enable = true;
+    disableLinks = true;          # Anti-phishing: no clickable links
+    disableRemoteContent = true;  # Privacy: block tracking pixels
+    preferPlainText = true;       # Security: plain text by default
+    disableTelemetry = true;      # Privacy: no data collection
   };
 
   home.activation.installFlatpaks = config.lib.dag.entryAfter ["writeBoundary"] ''

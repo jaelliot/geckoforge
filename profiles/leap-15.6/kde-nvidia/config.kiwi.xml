@@ -65,6 +65,9 @@
     <!-- Kvantum Qt theme engine for JuxTheme -->
     <package>kvantum-qt5</package>
     <package>kvantum-qt6</package>
+    <!-- Email Client -->
+    <package>MozillaThunderbird</package>
+    <package>MozillaThunderbird-translations-common</package>
   </packages>
 
   <!-- Docker is installed post-deployment via scripts/setup-docker.sh to ensure proper daemon configuration -->

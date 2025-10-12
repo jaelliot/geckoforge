@@ -242,7 +242,34 @@ cd ~/git/geckoforge
 
 ---
 
-## Step 12: Set Up Encrypted Cloud Backups
+## Step 12: Configure Email Client (Thunderbird)
+
+Geckoforge includes Mozilla Thunderbird with hardened anti-phishing settings.
+
+### Quick Setup
+
+1. Open Thunderbird (from application menu or `thunderbird` command)
+2. Add your email accounts:
+   - **Gmail:** Use OAuth2 authentication
+   - **Outlook:** Use OAuth2 authentication  
+   - **ProtonMail:** Run `~/git/geckoforge/scripts/setup-protonmail-bridge.sh` first
+
+### Security Notice
+
+⚠️ **Links in emails are NOT clickable** by default (anti-phishing protection).
+
+To open a link:
+1. Right-click → Copy Link Location
+2. Inspect the URL
+3. Paste into browser if safe
+
+**Complete setup guide:** [Thunderbird Setup Documentation](thunderbird-setup.md)
+
+**Time:** 10-15 minutes per email account
+
+---
+
+## Step 13: Set Up Encrypted Cloud Backups
 
 Geckoforge includes a comprehensive encrypted backup system for DevOps workflows.
 
