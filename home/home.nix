@@ -9,6 +9,7 @@
     ./modules/elixir.nix
     ./modules/firefox.nix
     ./modules/kde-theme.nix
+    ./modules/macos-keyboard.nix
     ./modules/shell.nix
     ./modules/thunderbird.nix
   ];

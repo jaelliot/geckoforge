@@ -104,6 +104,14 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 - VS Code, Cursor, WebStorm (via script setup)
 - MongoDB Compass, DBeaver, Postman (Flatpak)
 
+### ⌨️ macOS-style Keyboard Experience
+
+- **Kanata-powered remapping** - Swap Command/Control semantics system-wide
+- **KDE alignment** - Cmd+Q, Cmd+M, Cmd+Tab, and Cmd+L mirror macOS behavior
+- **Editor integrations** - VS Code, Firefox, and Kate receive Command shortcuts
+- **Declarative option** - Reapply configuration via `geckoforge.macosKeyboard`
+- **Verification tooling** - `scripts/test-macos-keyboard.sh` validates setup
+
 ### 🔒 System Resilience
 
 - **Btrfs filesystem** - Copy-on-write, compression, snapshots
@@ -176,6 +184,11 @@ cd geckoforge
    ./scripts/firstrun-user.sh
    ```
 
+6. **Optional macOS-style shortcuts** - Align modifiers with macOS:
+  ```bash
+  ./scripts/setup-macos-keyboard.sh
+  ```
+
 **Total time:** ~45 minutes (build + install + setup)
 
 **Next steps:** See [Getting Started Guide](docs/getting-started.md)
@@ -189,6 +202,7 @@ cd geckoforge
 - **[Getting Started](docs/getting-started.md)** - Installation and initial setup
 - **[Docker + NVIDIA](docs/docker-nvidia.md)** - GPU container workflows
 - **[Themes](docs/themes.md)** - Theme activation and customization
+- **[Keyboard Configuration](docs/guides/keyboard-configuration.md)** - macOS-style shortcut setup
 - **[Synergy Setup](docs/synergy-setup.md)** - Multi-machine KVM configuration
 - **[Backup & Recovery](docs/backup-recovery.md)** - Cloud backups and system restore
 - **[Testing Plan](docs/testing-plan.md)** - Validation procedures

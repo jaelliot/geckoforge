@@ -69,5 +69,6 @@ Next steps:
 2. Test GPU: docker run --rm --gpus all nvidia/cuda:12.4.0-base nvidia-smi
 3. Customize your Home-Manager config at ~/git/home
 4. Run 'home-manager switch --flake ~/git/home' to apply changes
+5. Optional: ./scripts/setup-macos-keyboard.sh for macOS-style shortcuts
 
 EOF
