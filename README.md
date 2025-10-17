@@ -119,14 +119,6 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 - **Declarative option** - Reapply configuration via `geckoforge.macosKeyboard`
 - **Verification tooling** - `scripts/test-macos-keyboard.sh` validates setup
 
-### �️ Security Hardening
-
-- **SSH lockdown** - Port 223, modern crypto suite, and legal banner applied at first boot
-- **Default-deny firewall** - `setup-secure-firewall.sh` creates trusted LAN zone only
-- **Encrypted DNS** - Quad9 DNS-over-TLS plus ProtonVPN CLI helper
-- **Automated security patches** - Daily `zypper patch --category security`
-- **Sandboxed apps** - Flatpak browsers and office suite with restricted filesystem access
-
 ### �🔒 System Resilience
 
 - **Btrfs filesystem** - Copy-on-write, compression, snapshots
