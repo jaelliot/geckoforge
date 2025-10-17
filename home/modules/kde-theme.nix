@@ -53,10 +53,10 @@ in
     '';
     
     # Window decorations
-    home.file.".config/kwinrc".text = ''
+    programs.kde.kwinrcFragments = mkBefore [ ''
       [org.kde.kdecoration2]
       theme=${cfg.windowDecoration}
-    '';
+    '' ];
     
     # Kvantum theme
     home.file.".config/Kvantum/kvantum.kvconfig".text = ''

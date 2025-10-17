@@ -58,6 +58,26 @@ else
     echo "No flake found at ~/git/home - skipping Home-Manager"
 fi
 
+echo ""
+echo "=== Night Color Blue Light Filter (Optional) ==="
+cat <<'EONC'
+KDE's Night Color feature reduces blue light in the evening for less eye strain.
+The configurator enables it with the geckoforge defaults (6500K day / 4500K night)
+and can also collect your location or custom schedule.
+
+EONC
+
+read -r -p "Run the Night Color setup wizard now? [Y/n]: " NIGHT_COLOR_CHOICE
+if [[ -z "${NIGHT_COLOR_CHOICE}" || "${NIGHT_COLOR_CHOICE}" =~ ^[Yy]$ ]]; then
+    if "$SCRIPT_DIR/configure-night-color.sh"; then
+        echo "Night Color configuration complete."
+    else
+        echo "Night Color setup encountered an issue; run scripts/configure-night-color.sh later to retry." >&2
+    fi
+else
+    echo "Skipping Night Color setup. Launch scripts/configure-night-color.sh later to customize manually."
+fi
+
 cat <<'EOF'
 
 ╔════════════════════════════════════════╗

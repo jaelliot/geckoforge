@@ -50,6 +50,13 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 - **One-command activation** - `./scripts/setup-jux-theme.sh`
 - **Declarative theming** - Optional Home-Manager configuration
 
+### 🌙 Night Color Comfort
+
+- **Night Color enabled by default** - 6500K day, 4500K night, 45-minute transitions
+- **Location-aware scheduling** - Automatic sunrise/sunset via KDE services with manual override support
+- **User-friendly wizard** - `./scripts/configure-night-color.sh` customizes temperatures, schedules, and coordinates
+- **Health check utility** - `./scripts/test-night-color.sh` validates configuration and runtime state
+
 ### 🚀 GPU-Ready Docker
 
 - **Docker Engine** with NVIDIA Container Toolkit
@@ -217,6 +224,7 @@ cd geckoforge
 - **[Getting Started](docs/getting-started.md)** - Installation and initial setup
 - **[Docker + NVIDIA](docs/docker-nvidia.md)** - GPU container workflows
 - **[Themes](docs/themes.md)** - Theme activation and customization
+- **[Night Color](docs/guides/night-color.md)** - Blue light filtering defaults, customization, and verification
 - **[Keyboard Configuration](docs/guides/keyboard-configuration.md)** - macOS-style shortcut setup
 - **[Security Configuration](docs/guides/security-configuration.md)** - Layered hardening tasks
 - **[Synergy Setup](docs/synergy-setup.md)** - Multi-machine KVM configuration
