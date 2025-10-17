@@ -30,6 +30,8 @@ This is an **action-oriented implementation task** for the **geckoforge KIWI ima
 
 The resulting configuration will be **built into an ISO** that users install, not applied to an existing openSUSE system.
 
+You are running on a Windows development machine without Nix installed. All Nix code should be syntactically correct but validation will happen when the ISO is built and deployed on the target Linux system. Focus on proper Nix syntax and Home-Manager patterns from the existing codebase.
+
 1.  **Plan & Structure**:
     *   Briefly outline your implementation plan. Organize work into numbered batches for major steps and lettered sub-batches for granular tasks (e.g., 1a, 1b, 2a).
     *   Use artifacts to keep batches small and auditable; avoid mega-drops that span multiple layers simultaneously.

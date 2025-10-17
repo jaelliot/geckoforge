@@ -10,6 +10,7 @@
     ./modules/firefox.nix
     ./modules/kde-theme.nix
     ./modules/macos-keyboard.nix
+    ./modules/security.nix
     ./modules/shell.nix
     ./modules/thunderbird.nix
   ];

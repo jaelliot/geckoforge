@@ -112,7 +112,15 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 - **Declarative option** - Reapply configuration via `geckoforge.macosKeyboard`
 - **Verification tooling** - `scripts/test-macos-keyboard.sh` validates setup
 
-### 🔒 System Resilience
+### �️ Security Hardening
+
+- **SSH lockdown** - Port 223, modern crypto suite, and legal banner applied at first boot
+- **Default-deny firewall** - `setup-secure-firewall.sh` creates trusted LAN zone only
+- **Encrypted DNS** - Quad9 DNS-over-TLS plus ProtonVPN CLI helper
+- **Automated security patches** - Daily `zypper patch --category security`
+- **Sandboxed apps** - Flatpak browsers and office suite with restricted filesystem access
+
+### �🔒 System Resilience
 
 - **Btrfs filesystem** - Copy-on-write, compression, snapshots
 - **Snapper integration** - Automatic pre/post-update snapshots
@@ -189,6 +197,13 @@ cd geckoforge
   ./scripts/setup-macos-keyboard.sh
   ```
 
+7. **Security hardening (recommended)** - Apply layered defenses:
+  ```bash
+  ./scripts/setup-secure-firewall.sh
+  ./scripts/setup-secure-dns.sh
+  ./scripts/setup-auto-updates.sh
+  ```
+
 **Total time:** ~45 minutes (build + install + setup)
 
 **Next steps:** See [Getting Started Guide](docs/getting-started.md)
@@ -203,6 +218,7 @@ cd geckoforge
 - **[Docker + NVIDIA](docs/docker-nvidia.md)** - GPU container workflows
 - **[Themes](docs/themes.md)** - Theme activation and customization
 - **[Keyboard Configuration](docs/guides/keyboard-configuration.md)** - macOS-style shortcut setup
+- **[Security Configuration](docs/guides/security-configuration.md)** - Layered hardening tasks
 - **[Synergy Setup](docs/synergy-setup.md)** - Multi-machine KVM configuration
 - **[Backup & Recovery](docs/backup-recovery.md)** - Cloud backups and system restore
 - **[Testing Plan](docs/testing-plan.md)** - Validation procedures
