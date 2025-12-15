@@ -57,6 +57,14 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 - **User-friendly wizard** - `./scripts/configure-night-color.sh` customizes temperatures, schedules, and coordinates
 - **Health check utility** - `./scripts/test-night-color.sh` validates configuration and runtime state
 
+### 🪟 Windows Application Integration
+
+- **WinApps support** - Run Windows applications seamlessly on Linux via Docker
+- **Automated Windows installation** - ISO downloaded from Microsoft servers
+- **Full application compatibility** - Microsoft Office, Adobe Creative Cloud, game engines
+- **Native-like experience** - Windows apps appear in KDE menu, open files via right-click
+- **Declarative configuration** - Manage WinApps via Home-Manager with reproducible settings
+
 ### 🚀 GPU-Ready Docker
 
 - **Docker Engine** with NVIDIA Container Toolkit
@@ -217,6 +225,7 @@ cd geckoforge
 - **[Docker + NVIDIA](docs/docker-nvidia.md)** - GPU container workflows
 - **[Themes](docs/themes.md)** - Theme activation and customization
 - **[Night Color](docs/guides/night-color.md)** - Blue light filtering defaults, customization, and verification
+- **[WinApps](docs/guides/winapps.md)** - Windows application integration (Office, Adobe, game engines)
 - **[Keyboard Configuration](docs/guides/keyboard-configuration.md)** - macOS-style shortcut setup
 - **[Security Configuration](docs/guides/security-configuration.md)** - Layered hardening tasks
 - **[Synergy Setup](docs/synergy-setup.md)** - Multi-machine KVM configuration

@@ -13,6 +13,7 @@
     ./modules/security.nix
     ./modules/shell.nix
     ./modules/thunderbird.nix
+    ./modules/winapps.nix
   ];
 
   home.username = "jay";

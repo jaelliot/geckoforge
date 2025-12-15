@@ -78,6 +78,26 @@ else
     echo "Skipping Night Color setup. Launch scripts/configure-night-color.sh later to customize manually."
 fi
 
+echo ""
+echo "=== Windows Application Support (Optional) ==="
+cat <<'EOWIN'
+WinApps enables seamless Windows application integration (Office, Adobe, game engines).
+Requires ~20-30GB disk space and 4-8GB RAM for Windows VM.
+Windows ISO downloaded automatically from Microsoft servers.
+
+EOWIN
+
+read -r -p "Install WinApps for Windows application support? [y/N]: " WINAPPS_CHOICE
+if [[ "${WINAPPS_CHOICE}" =~ ^[Yy]$ ]]; then
+    if "$SCRIPT_DIR/setup-winapps.sh"; then
+        echo "WinApps installation complete. Run 'winapps-setup' to create Windows VM."
+    else
+        echo "WinApps setup encountered an issue; run scripts/setup-winapps.sh later to retry." >&2
+    fi
+else
+    echo "Skipping WinApps. Install later with scripts/setup-winapps.sh if needed."
+fi
+
 cat <<'EOF'
 
 ╔════════════════════════════════════════╗
