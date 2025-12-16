@@ -1,3 +1,7 @@
+# @file home/modules/desktop.nix
+# @description KDE Plasma desktop configuration including night color and Chromium
+# @update-policy Update when KDE or desktop configuration changes
+
 { config, lib, pkgs, ... }:
 
 with lib;

@@ -5,7 +5,7 @@ ISO="${1:-$(ls out/*.iso 2>/dev/null | tail -n1 || true)}"
 
 if [ ! -f "$ISO" ]; then
     echo "❌ Error: ISO not found"
-    echo "Build it first: ./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia"
+    echo "Build it first: ./tools/kiwi-build.sh profile"
     exit 1
 fi
 

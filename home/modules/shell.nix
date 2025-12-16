@@ -87,11 +87,6 @@
     # fzf for advanced fuzzy search
     fzf
   ];
-    zsh-syntax-highlighting
-    
-    # Powerlevel10k theme
-    zsh-powerlevel10k
-  ];
   
   # Powerlevel10k configuration file
   home.file.".p10k.zsh".text = ''

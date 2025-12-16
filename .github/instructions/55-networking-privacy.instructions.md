@@ -1,10 +1,9 @@
 ---
-applyTo: "profiles/**,scripts/**,**/*.conf,**/*.ini,**/*.yaml,**/*.yml"
+applyTo: profile/**,scripts/**,**/*.conf,**/*.ini,**/*.yaml,**/*.yml
 ---
 
 ---
 description: VPN (ProtonVPN) and privacy-respecting DNS configuration
-globs: ["scripts/*vpn*.sh", "scripts/*dns*.sh", "home/modules/*network*.nix"]
 alwaysApply: false
 version: 0.3.0
 ---

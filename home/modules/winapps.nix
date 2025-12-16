@@ -69,7 +69,13 @@ in
     rdpPassword = mkOption {
       type = types.str;
       default = "";
-      description = "Windows password for RDP connection. Leave empty to configure manually.";
+      description = '':
+        Windows password for RDP connection.
+        
+        ⚠️ SECURITY WARNING: Storing passwords in Nix configuration is insecure.
+        Leave empty and configure manually in ~/.config/winapps/winapps.conf
+        For production use, consider using a secrets management solution.
+      '';
     };
 
     rdpDomain = mkOption {

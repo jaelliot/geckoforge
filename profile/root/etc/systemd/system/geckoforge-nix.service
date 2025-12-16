@@ -1,0 +1,15 @@
+[Unit]
+Description=Geckoforge first boot: install Nix
+ConditionFirstBoot=yes
+After=network-online.target geckoforge-firstboot.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/firstboot-nix.sh
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

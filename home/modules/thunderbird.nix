@@ -1,3 +1,7 @@
+# @file home/modules/thunderbird.nix
+# @description Hardened Thunderbird email client with anti-phishing and privacy settings
+# @update-policy Update when Thunderbird security settings need adjustment
+
 { config, lib, pkgs, ... }:
 
 with lib;

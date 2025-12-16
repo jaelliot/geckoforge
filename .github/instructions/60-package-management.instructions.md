@@ -4,8 +4,8 @@ applyTo: "**/package.json,**/package-lock.json,**/*.nix,**/requirements*.txt,**/
 
 ---
 description: Package management policies and verification procedures for all package sources
-globs: ["profiles/**/*.xml", "home/**/*.nix", "scripts/**/*.sh"]
 alwaysApply: false
+version: 0.3.0
 ---
 
 ## Use when
@@ -47,7 +47,7 @@ Need a package?
 ### Where to Specify:
 **Layer 1 (KIWI)**:
 ```xml
-<!-- profiles/leap-15.6/kde-nvidia/config.kiwi.xml -->
+<!-- profile/config.kiwi.xml -->
 <packages type="image">
   <package>kernel-default</package>
   <package>plasma5-desktop</package>

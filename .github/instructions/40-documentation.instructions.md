@@ -4,8 +4,8 @@ applyTo: "README.md,docs/**,**/*.md"
 
 ---
 description: Documentation governance, structure, and daily summary requirements
-globs: ["docs/**/*.md", "README.md", "**/*.md"]
 alwaysApply: false
+version: 0.3.0
 ---
 
 ## Use when
@@ -45,7 +45,7 @@ docs/
 
 ### File Naming:
 ```
-docs/daily-summaries/2025-01/2025-01-06.md
+docs/summaries/2025-01-06.md
                     ↑ month   ↑ full date
 ```
 
@@ -173,7 +173,7 @@ docs/daily-summaries/2025-01/2025-01-06.md
 - Verification checklist
 
 ### 2. Architecture Documentation
-**Location**: `docs/architecture/`  
+**Location**: `docs/`  
 **Purpose**: System design and structure  
 **Audience**: Contributors and advanced users
 
@@ -184,7 +184,7 @@ docs/daily-summaries/2025-01/2025-01-06.md
 - Design decisions (ADRs)
 
 ### 3. How-To Guides
-**Location**: `docs/guides/`  
+**Location**: `docs/`  
 **Purpose**: Task-specific instructions  
 **Audience**: Users performing specific tasks
 
@@ -194,7 +194,7 @@ docs/daily-summaries/2025-01/2025-01-06.md
 - Operations: Updates, rollbacks, maintenance
 
 ### 4. Examples
-**Location**: `docs/examples/` or `scripts/examples/`  
+**Location**: `docs/examples/` or `examples/`  
 **Purpose**: Working code samples  
 **Audience**: Users wanting to copy-paste solutions
 
@@ -222,7 +222,7 @@ Always include:
 
 ```bash
 # Example: Build ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # Expected output:
 # [kiwi] Building ISO...
@@ -246,7 +246,7 @@ Always include:
 - Check links before committing
 
 ```markdown
-See [Architecture](../architecture/README.md) for details.
+See [Architecture](docs/README.md) for details.
 Read more at [openSUSE Wiki](https://en.opensuse.org/Portal:Kiwi)
 ```
 
@@ -318,7 +318,7 @@ Create a new script:
 ```markdown
 1. Build the ISO:
    ```bash
-   ./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+   ./tools/kiwi-build.sh profile
    ```
 
 2. Write to USB:
@@ -398,7 +398,7 @@ The Docker setup script (`scripts/setup-docker.sh`) automatically:
 - Installs Docker CE
 - Configures user permissions
 
-See the [implementation](../scripts/setup-docker.sh) for details.
+See the [implementation](scripts/setup-docker.sh) for details.
 ```
 
 ---
@@ -508,8 +508,8 @@ docker run -it --gpus all nvidia/cuda:12.4.0-devel bash
 ```
 
 ## See Also
-- [Docker Setup](docker-setup.md)
-- [NVIDIA Driver](nvidia-driver.md)
+- [Docker + NVIDIA Guide](docs/docker-nvidia.md)
+- [Getting Started](docs/getting-started.md)
 ```
 
 ---

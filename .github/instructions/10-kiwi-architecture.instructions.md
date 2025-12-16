@@ -1,11 +1,11 @@
 ---
-applyTo: "profiles/**,tools/**,scripts/**,**/*.kiwi.xml"
+applyTo: profile/**,tools/**,scripts/**,**/*.kiwi.xml
 ---
 
 ---
 description: KIWI image builder architecture and 4-layer system design
-globs: ["profiles/**/*", "tools/**/*", "scripts/**/*"]
 alwaysApply: false
+version: 0.3.0
 ---
 
 ## Use when
@@ -17,7 +17,7 @@ alwaysApply: false
 ## Four-Layer Architecture (MANDATORY)
 
 ### Layer 1: ISO Layer (KIWI Profile)
-**Lives in**: `profiles/leap-15.6/kde-nvidia/`  
+**Lives in**: `profile/`  
 **Executed**: Once, during ISO build  
 **Purpose**: Bake immutable system structure into the ISO
 
@@ -202,10 +202,10 @@ Layer 4 → Layer 2
 ```bash
 # 1. Make changes to profile
 cd geckoforge/
-$EDITOR profiles/leap-15.6/kde-nvidia/config.kiwi.xml
+$EDITOR profile/config.kiwi.xml
 
 # 2. Build ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # 3. ISO appears in out/
 ls out/*.iso
@@ -226,7 +226,7 @@ ls out/*.iso
 
 ### Required Structure:
 ```
-profiles/leap-15.6/kde-nvidia/
+profile/
 ├── config.kiwi.xml              # Main KIWI configuration
 ├── root/                        # File overlays
 │   ├── etc/
@@ -278,7 +278,7 @@ profiles/leap-15.6/kde-nvidia/
 #### TLP Installation (Layer 1: KIWI)
 
 ```xml
-<!-- profiles/leap-15.6/kde-nvidia/config.kiwi.xml -->
+<!-- profile/config.kiwi.xml -->
 <packages type="image">
   <package>tlp</package>
   <package>tlp-rdw</package>  <!-- For NetworkManager integration -->
@@ -344,7 +344,7 @@ sudo powertop
 #### NVIDIA Suspend Hook (if needed)
 
 ```bash
-# profiles/leap-15.6/kde-nvidia/root/etc/systemd/system/nvidia-suspend.service
+# profile/root/etc/systemd/system/nvidia-suspend.service
 [Unit]
 Description=NVIDIA GPU suspend helper
 Before=sleep.target
@@ -358,7 +358,7 @@ WantedBy=sleep.target
 ```
 
 ```bash
-# profiles/leap-15.6/kde-nvidia/root/usr/bin/nvidia-sleep.sh
+# profile/root/usr/bin/nvidia-sleep.sh
 #!/bin/bash
 case "$1" in
     suspend|hibernate)

@@ -106,7 +106,7 @@ docker run --rm --gpus all \
 
 ### Systemd service
 
-Use the example in `scripts/examples/systemd-gpu-service/` to generate user services with Docker Compose or plain `docker run`.
+Use the example in `examples/systemd-gpu-service/` to generate user services with Docker Compose or plain `docker run`.
 
 ## Troubleshooting
 

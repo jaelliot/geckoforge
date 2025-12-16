@@ -5,7 +5,6 @@ applyTo: "**"
 ---
 description: Universal prohibitions and non-negotiable standards for geckoforge
 alwaysApply: true
-globs: ["**/*.sh", "**/*.nix", "**/*.xml", "**/*.yml", "**/*.yaml", "**/*.md"]
 version: 0.3.0
 ---
 
@@ -35,7 +34,7 @@ These rules are **source-of-truth architecture guidance** for the geckoforge KIW
 - Running commands that require user group membership at first-boot
 - Mixing ISO-baked, first-boot, user-setup, and Home-Manager layer responsibilities
 
-**Required**: Respect the 4-layer architecture (see 10-kiwi-architecture.mdc)
+**Required**: Respect the 4-layer architecture (see 10-kiwi-architecture.instructions.md)
 
 ### Package Hallucinations
 - Inventing package names not available in openSUSE Leap 15.6 repos
@@ -51,14 +50,14 @@ These rules are **source-of-truth architecture guidance** for the geckoforge KIW
 - Creating documentation outside `docs/` directory
 - Using incorrect file paths in config.kiwi.xml
 
-**Required**: Follow established directory structure (see 05-project-overview.mdc)
+**Required**: Follow established directory structure (see 05-project-overview.instructions.md)
 
 ## Required Patterns
 
 ### Script Naming and Location
 - User scripts: `scripts/*.sh`
-- KIWI first-boot: `profiles/leap-15.6/kde-nvidia/scripts/firstboot-*.sh`
-- Examples: `scripts/examples/*/`
+- KIWI first-boot: `profile/scripts/firstboot-*.sh`
+- Examples: `examples/*/`
 - All scripts must be executable: `chmod +x`
 
 ### Home-Manager Modules
@@ -68,13 +67,13 @@ These rules are **source-of-truth architecture guidance** for the geckoforge KIW
 - Import new modules in `home.nix`
 
 ### Documentation Structure
-- Architecture: `docs/architecture/`
-- Guides: `docs/guides/`
+- Architecture: `docs/`
+- Guides: `docs/`
 - Daily summaries: `docs/daily-summaries/YYYY-MM/`
 - Examples: `docs/examples/`
 
 ### KIWI Configuration
-- Profile: `profiles/leap-15.6/kde-nvidia/`
+- Profile: `profile/`
 - Config: `config.kiwi.xml`
 - Scripts: `scripts/` subdirectory
 - Root overlay: `root/` subdirectory

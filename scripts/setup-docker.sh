@@ -117,4 +117,4 @@ fi
 log "[summary] Next steps:"
 log "  • Install NVIDIA container toolkit (if applicable): ./docker-nvidia-install.sh"
 log "  • Verify GPU support: ./docker-nvidia-verify.sh"
-log "  • Explore example compose project: scripts/examples/postgres-docker-compose"
+log "  • Explore example compose project: examples/postgres-docker-compose"

@@ -1,6 +1,0 @@
-[Unit]
-Description=Prune unused Docker containers/images
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/docker system prune -a -f --volumes

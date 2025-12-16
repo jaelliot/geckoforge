@@ -4,7 +4,6 @@ applyTo: "scripts/*ide*.sh,home/modules/*ide*.nix"
 
 ---
 description: IDE configuration backup and sync for VS Code, Cursor, Kiro, and Void
-globs: ["scripts/*ide*.sh", "home/modules/*ide*.nix"]
 alwaysApply: false
 version: 0.3.0
 ---

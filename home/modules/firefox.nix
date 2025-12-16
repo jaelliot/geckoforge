@@ -1,4 +1,8 @@
-{ config, pkgs, ... }:
+# @file home/modules/firefox.nix
+# @description Firefox browser with privacy-focused extensions and hardened settings
+# @update-policy Update when Firefox extensions or privacy settings need adjustment
+
+{ pkgs, ... }:
 
 {
   programs.firefox = {

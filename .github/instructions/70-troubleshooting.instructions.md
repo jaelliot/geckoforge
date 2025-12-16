@@ -4,7 +4,6 @@ applyTo: "docs/troubleshooting/**/*.md"
 
 ---
 description: Systematic troubleshooting procedures organized by component and layer
-globs: ["docs/troubleshooting/**/*.md"]
 alwaysApply: false
 version: 0.3.0
 ---
@@ -60,10 +59,10 @@ resolvectl status  # DNS configuration
 #### Check 1: KIWI Configuration
 ```bash
 # Validate XML syntax
-xmllint --noout profiles/leap-15.6/kde-nvidia/config.kiwi.xml
+xmllint --noout profile/config.kiwi.xml
 
 # Check for typos in package names
-grep '<package>' profiles/leap-15.6/kde-nvidia/config.kiwi.xml
+grep '<package>' profile/config.kiwi.xml
 ```
 
 **Common causes:**
@@ -83,10 +82,10 @@ zypper refresh
 **Fix:**
 ```bash
 # Correct package name
-$EDITOR profiles/leap-15.6/kde-nvidia/config.kiwi.xml
+$EDITOR profile/config.kiwi.xml
 
 # Rebuild
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 ```
 
 ### Symptom: ISO Too Large (>4GB)
@@ -94,7 +93,7 @@ $EDITOR profiles/leap-15.6/kde-nvidia/config.kiwi.xml
 #### Check: Package List
 ```bash
 # List all packages in config
-grep '<package>' profiles/leap-15.6/kde-nvidia/config.kiwi.xml | wc -l
+grep '<package>' profile/config.kiwi.xml | wc -l
 
 # Identify large packages
 zypper info package-name | grep "Installed Size"
@@ -108,7 +107,7 @@ zypper info package-name | grep "Installed Size"
 **Fix:**
 ```bash
 # Remove unnecessary packages
-$EDITOR profiles/leap-15.6/kde-nvidia/config.kiwi.xml
+$EDITOR profile/config.kiwi.xml
 
 # Move dev tools to Home-Manager
 $EDITOR home/modules/development.nix

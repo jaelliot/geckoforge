@@ -1,11 +1,11 @@
 ---
-applyTo: ".github/workflows/**,scripts/**,tools/**,**/*test*"
+applyTo: .github/workflows/**,scripts/**,tools/**,examples/**,**/*test*
 ---
 
 ---
 description: Testing requirements and deployment verification procedures
-globs: ["tools/**/*", "scripts/**/*", "docs/testing-plan.md"]
 alwaysApply: false
+version: 0.3.0
 ---
 
 ## Use when
@@ -147,7 +147,7 @@ Use laptop as primary machine for 1-2 weeks:
 ### Build Verification:
 ```bash
 # Build ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # Check build artifacts
 ls -lh out/geckoforge-*.iso
@@ -386,7 +386,7 @@ elixir --version
 ### Monthly Checks:
 ```bash
 # Rebuild ISO with latest packages
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # Test in VM
 ./tools/test-iso.sh out/geckoforge-*.iso
@@ -426,7 +426,7 @@ elixir --version
 3. **Build test ISO with new version**
    ```bash
    # Update KIWI config
-   $EDITOR profiles/leap-15.6/kde-nvidia/config.kiwi.xml
+   $EDITOR profile/config.kiwi.xml
    # Change repos to 15.7
    
    # Build test ISO

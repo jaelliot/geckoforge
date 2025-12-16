@@ -17,7 +17,7 @@ git clone https://github.com/jaelliot/geckoforge.git
 cd geckoforge
 
 # Build the ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # ISO will be in: out/geckoforge-leap156-kde.x86_64-*.iso
 ```

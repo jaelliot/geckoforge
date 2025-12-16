@@ -4,8 +4,8 @@ applyTo: "home/**,**/*.nix"
 
 ---
 description: Nix and Home-Manager patterns, module organization, and package management
-globs: ["home/**/*.nix", "profiles/**/firstboot-nix.sh"]
 alwaysApply: false
+version: 0.3.0
 ---
 
 ## Use when

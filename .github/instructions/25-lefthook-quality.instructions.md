@@ -4,7 +4,6 @@ applyTo: ".lefthook.yml,**/.lefthook/**,scripts/**,.github/**"
 
 ---
 description: Lefthook pre-commit and pre-push quality gates for geckoforge
-globs: ["lefthook.yml", "**/*.sh", "**/*.nix", "**/*.xml", "**/*.md"]
 alwaysApply: false
 version: 0.3.0
 ---
@@ -273,13 +272,13 @@ pre-push:
         echo "🔍 Running ISO build smoke test..."
         
         # Validate config without building
-        if ! ./tools/kiwi-build.sh --validate-only profiles/leap-15.6/kde-nvidia; then
+        if ! ./tools/kiwi-build.sh --validate-only profile; then
           echo "❌ ISO build validation failed"
           exit 1
         fi
         
         echo "✅ ISO build validation passed"
-        echo "💡 Run full build: ./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia"
+        echo "💡 Run full build: ./tools/kiwi-build.sh profile"
 ```
 
 ---
@@ -331,9 +330,9 @@ echo "- Bypassed shellcheck for scripts/prototype.sh (WIP)" >> docs/daily-summar
 ## Custom Validation Scripts
 
 ### Location
-`tools/validate/` directory
+`tools/` directory
 
-### Example: `tools/validate/check-anti-patterns.sh`
+### Example: `tools/check-anti-patterns.sh`
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
@@ -525,7 +524,7 @@ pre-commit:
     
     anti-patterns:
       glob: "**/*.{sh,nix,md}"
-      run: tools/validate/check-anti-patterns.sh
+      run: tools/check-anti-patterns.sh
     
     executable-check:
       glob: "scripts/**/*.sh"
@@ -542,10 +541,10 @@ pre-push:
   parallel: false
   commands:
     validate-layers:
-      run: tools/validate/check-layer-assignments.sh
+      run: tools/check-layer-assignments.sh
     
     iso-validate:
-      run: ./tools/kiwi-build.sh --validate-only profiles/leap-15.6/kde-nvidia
+      run: ./tools/kiwi-build.sh --validate-only profile
     
     docs-check:
       run: |

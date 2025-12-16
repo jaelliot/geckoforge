@@ -4,8 +4,8 @@ applyTo: "**/*Dockerfile*,**/*docker-compose*.yml,**/*compose*.yml,scripts/**doc
 
 ---
 description: Docker-only container runtime with NVIDIA GPU support policies
-globs: ["scripts/*docker*.sh", "scripts/firstrun-user.sh", "docs/*docker*.md", "scripts/examples/**"]
 alwaysApply: false
+version: 0.3.0
 ---
 
 ## Use when
@@ -227,7 +227,7 @@ services:
 
 ### PostgreSQL with Docker Compose
 ```yaml
-# scripts/examples/postgres-docker-compose/docker-compose.yml
+# examples/postgres-docker-compose/docker-compose.yml
 version: '3.8'
 
 services:
@@ -513,5 +513,5 @@ After Docker setup:
 - Docker setup: `scripts/setup-docker.sh`
 - NVIDIA setup: `scripts/docker-nvidia-install.sh`
 - Verification: `scripts/docker-nvidia-verify.sh`
-- Examples: `scripts/examples/*/`
+- Examples: `examples/*/`
 - Full guide: `docs/podman-to-docker-migration.md`

@@ -85,7 +85,7 @@ version: 0.3.0
 └─────────────────────────────────────┘
 ```
 
-**See**: `10-kiwi-architecture.mdc` for detailed layer responsibilities
+**See**: [10-kiwi-architecture.instructions.md](.github/instructions/10-kiwi-architecture.instructions.md) for detailed layer responsibilities
 
 ## Key Differentiators
 
@@ -160,7 +160,7 @@ version: 0.3.0
 
 ```
 geckoforge/
-├── profiles/leap-15.6/kde-nvidia/  # KIWI profile
+├── profile/  # KIWI profile
 │   ├── config.kiwi.xml             # Package lists, repos
 │   ├── root/                       # File overlays
 │   └── scripts/                    # First-boot scripts
@@ -185,10 +185,10 @@ geckoforge/
 
 ```bash
 # 1. Make changes to profile/scripts/home
-$EDITOR profiles/leap-15.6/kde-nvidia/config.kiwi.xml
+$EDITOR profile/config.kiwi.xml
 
 # 2. Build ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # 3. Test in VM
 ./tools/test-iso.sh out/geckoforge-*.iso
@@ -203,7 +203,7 @@ $EDITOR profiles/leap-15.6/kde-nvidia/config.kiwi.xml
 **Phase 2**: Laptop testing (daily driver, 1-2 weeks)  
 **Phase 3**: Production workstation (replace Windows 10)
 
-**See**: `50-testing-deployment.mdc` for detailed test procedures
+**See**: [50-testing-deployment.instructions.md](.github/instructions/50-testing-deployment.instructions.md) for detailed test procedures
 
 ## Community & Support
 

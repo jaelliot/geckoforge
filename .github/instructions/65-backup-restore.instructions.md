@@ -4,7 +4,6 @@ applyTo: "scripts/*backup*.sh,home/modules/*backup*.nix,.rclone.conf"
 
 ---
 description: Backup strategies with rclone encryption, external HDDs, and future onsite server
-globs: ["scripts/*backup*.sh", "home/modules/*backup*.nix", ".rclone.conf"]
 alwaysApply: false
 version: 0.3.0
 ---

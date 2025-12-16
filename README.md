@@ -47,15 +47,15 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
   - JuxDeco window decorations with rounded corners
   - NoMansSkyJux Kvantum Qt theme for unified app styling
   - System-wide color coordination
-- **One-command activation** - `./scripts/setup-jux-theme.sh`
-- **Declarative theming** - Optional Home-Manager configuration
+- **Declarative theming** - Managed via Home-Manager (`home/modules/kde-theme.nix`)
+- **Night Color included** - Blue light reduction configured declaratively
 
 ### 🌙 Night Color Comfort
 
-- **Night Color enabled by default** - 6500K day, 4500K night, 45-minute transitions
-- **Location-aware scheduling** - Automatic sunrise/sunset via KDE services with manual override support
-- **User-friendly wizard** - `./scripts/configure-night-color.sh` customizes temperatures, schedules, and coordinates
-- **Health check utility** - `./scripts/test-night-color.sh` validates configuration and runtime state
+- **Night Color configured declaratively** - 6500K day, 3500K night via Home-Manager
+- **Location-aware scheduling** - Automatic sunrise/sunset via KDE services
+- **Customizable** - Edit `home/modules/kde-theme.nix` to adjust temperatures and timing
+- **Health check utility** - `./scripts/test-night-color.sh` validates configuration
 
 ### 🪟 Windows Application Integration
 
@@ -165,7 +165,7 @@ git clone https://github.com/jaelliot/geckoforge.git
 cd geckoforge
 
 # Build ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # ISO created in: out/geckoforge-leap156-kde.x86_64-*.iso
 ```
@@ -206,7 +206,8 @@ cd geckoforge
 
 7. **Security hardening (recommended)** - Apply layered defenses:
   ```bash
-  ./scripts/setup-secure-firewall.sh
+  # Security hardening
+  ./scripts/setup-firewall.sh
   ./scripts/setup-secure-dns.sh
   ./scripts/setup-auto-updates.sh
   ```
@@ -224,18 +225,18 @@ cd geckoforge
 - **[Getting Started](docs/getting-started.md)** - Installation and initial setup
 - **[Docker + NVIDIA](docs/docker-nvidia.md)** - GPU container workflows
 - **[Themes](docs/themes.md)** - Theme activation and customization
-- **[Night Color](docs/guides/night-color.md)** - Blue light filtering defaults, customization, and verification
-- **[WinApps](docs/guides/winapps.md)** - Windows application integration (Office, Adobe, game engines)
-- **[Keyboard Configuration](docs/guides/keyboard-configuration.md)** - macOS-style shortcut setup
-- **[Security Configuration](docs/guides/security-configuration.md)** - Layered hardening tasks
+- **[Night Color](docs/night-color.md)** - Blue light filtering defaults, customization, and verification
+- **[WinApps](docs/winapps.md)** - Windows application integration (Office, Adobe, game engines)
+- **[Keyboard Configuration](docs/keyboard-configuration.md)** - macOS-style shortcut setup
+- **[Security Configuration](docs/security-configuration.md)** - Layered hardening tasks
 - **[Synergy Setup](docs/synergy-setup.md)** - Multi-machine KVM configuration
 - **[Backup & Recovery](docs/backup-recovery.md)** - Cloud backups and system restore
 - **[Testing Plan](docs/testing-plan.md)** - Validation procedures
 
 ### Architecture
 
-- **[Architecture Overview](docs/architecture/README.md)** - Four-layer design
-- **[Directory Structure](docs/architecture/directory-tree.md)** - Repository layout
+- **[Architecture Overview](docs/README.md)** - Four-layer design
+- **[Directory Structure](docs/directory-tree.md)** - Repository layout
 - **[Btrfs Layout](docs/btrfs-layout.md)** - Filesystem and snapshots
 
 ### Development
@@ -243,6 +244,20 @@ cd geckoforge
 - **[Daily Summaries](docs/daily-summaries/)** - Development log
 - **[Contributing](#-contributing)** - How to contribute
 - **[Cursor Rules](.cursor/rules/)** - AI assistant guidelines
+
+### Migration & Consolidation (v0.4.0)
+
+**Script Consolidation** - Simplified setup with fewer scripts:
+- `setup-firewall.sh` - Merged firewall + security hardening (was `harden.sh` + `setup-secure-firewall.sh`)
+- Flatpak installation - Now in Home-Manager activation (was `install-flatpaks.sh`)
+- Theme configuration - Declarative via `home/modules/kde-theme.nix` (was `setup-jux-theme.sh`)
+- Night Color - Declarative via `home/modules/kde-theme.nix` (was `configure-night-color.sh`)
+
+**Benefits**:
+- 5 fewer scripts to maintain (-23%)
+- Reproducible theme + Night Color config
+- Flatpaks version-controlled in Git
+- Single source of truth for security hardening
 
 ---
 
@@ -270,6 +285,27 @@ Geckoforge uses a **four-layer architecture** for reproducibility and maintainab
 │ Layer 1: ISO (KIWI profile)        │  Base OS, repositories, themes
 │ Immutable system image             │  Reproducible builds
 └─────────────────────────────────────┘
+```
+
+### Repository Structure (Flattened v0.4.0)
+
+```
+geckoforge/
+├── profile/          # KIWI image definition (was profiles/leap-15.6/kde-nvidia/)
+│   ├── config.kiwi.xml
+│   ├── root/         # File overlays
+│   └── scripts/      # First-boot automation
+├── home/             # Home-Manager (Nix) configuration
+│   ├── flake.nix
+│   ├── home.nix
+│   └── modules/      # Modular configs (theme, shell, dev tools)
+├── scripts/          # User setup scripts (Layer 3)
+├── examples/         # Working code examples (was scripts/examples/)
+├── tools/            # Build and validation tools
+├── themes/           # KDE theme source files
+└── docs/             # Flattened documentation
+    ├── audits/       # Quality audits
+    └── summaries/    # Development log (was daily-summaries/YYYY-MM/)
 ```
 
 ### Three-Layer Package Management
@@ -307,7 +343,7 @@ Geckoforge uses a **four-layer architecture** for reproducibility and maintainab
 - **Btrfs + Snapper**: Instant OS rollbacks
 - **Secure Boot + LUKS2**: Security by default
 
-**See:** [Architecture Documentation](docs/architecture/README.md)
+**See:** [Architecture Documentation](docs/README.md)
 
 ---
 
@@ -330,7 +366,7 @@ lefthook run pre-push
 
 ```bash
 # Build and validate ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # Test in VM
 ./tools/test-iso.sh out/geckoforge-*.iso
@@ -363,7 +399,7 @@ lefthook run pre-push
 
 ```bash
 # Build ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # Test in VM
 ./tools/test-iso.sh
@@ -379,7 +415,7 @@ lefthook run pre-commit
 
 ```
 geckoforge/
-├── profiles/leap-15.6/kde-nvidia/  # KIWI profile (Layer 1)
+├── profile/  # KIWI profile (Layer 1)
 ├── home/                           # Home-Manager config (Layer 4)
 ├── scripts/                        # User setup scripts (Layer 3)
 ├── docs/                           # Documentation
@@ -395,7 +431,7 @@ Contributions welcome! Please follow these guidelines:
 
 ### Before Contributing
 
-1. **Read documentation** - Especially [Architecture](docs/architecture/README.md)
+1. **Read documentation** - Especially [Architecture](docs/README.md)
 2. **Check `.cursor/rules/`** - Repository conventions and policies
 3. **Review existing issues** - Avoid duplicate work
 

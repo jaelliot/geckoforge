@@ -216,8 +216,7 @@
     };
     
     Timer = {
-      OnCalendar = "daily";
-      OnCalendar = "*-*-* 02:00:00";
+      OnCalendar = "*-*-* 02:00:00";  # Daily at 2 AM
       Persistent = true;  # Run if system was off at scheduled time
       RandomizedDelaySec = "15m";  # Avoid exact hour load
     };
@@ -318,22 +317,78 @@
   # ===== Activation Scripts =====
   # Remind user to configure rclone after first boot
   
+  # ===== Backup Verification Script =====
+  home.file.".local/bin/check-backups" = {
+    executable = true;
+    text = ''
+      #!/usr/bin/env bash
+      # Check rclone backup status and health
+      
+      RED='\033[0;31m'
+      GREEN='\033[0;32m'
+      YELLOW='\033[1;33m'
+      NC='\033[0m'
+      
+      echo "=== Backup Health Check ==="
+      echo ""
+      
+      # Check if rclone configured
+      if ! ${pkgs.rclone}/bin/rclone listremotes | grep -q "."; then
+          echo -e "''${RED}✗ No rclone remotes configured''${NC}"
+          echo "  Run: rclone config"
+          exit 1
+      fi
+      
+      echo -e "''${GREEN}✓ Rclone configured''${NC}"
+      echo "Remotes:"
+      ${pkgs.rclone}/bin/rclone listremotes | sed 's/^/  /'
+      echo ""
+      
+      # Check systemd timers
+      if systemctl --user is-enabled rclone-backup-critical.timer >/dev/null 2>&1; then
+          echo -e "''${GREEN}✓ Backup timer enabled''${NC}"
+          
+          LAST_RUN=$(systemctl --user show rclone-backup-critical.timer -p LastTriggerUSec --value 2>/dev/null)
+          if [ "$LAST_RUN" != "n/a" ] && [ -n "$LAST_RUN" ]; then
+              echo "  Last run: $LAST_RUN"
+          else
+              echo -e "  ''${YELLOW}⚠ Never run yet''${NC}"
+          fi
+          
+          NEXT_RUN=$(systemctl --user show rclone-backup-critical.timer -p NextElapseUSecRealtime --value 2>/dev/null)
+          echo "  Next run: $NEXT_RUN"
+      else
+          echo -e "''${YELLOW}⚠ Backup timer not enabled''${NC}"
+          echo "  Enable: systemctl --user enable --now rclone-backup-critical.timer"
+      fi
+      
+      echo ""
+      echo "Commands:"
+      echo "  rclone-backup-critical  - Run backup now"
+      echo "  rclone-verify-critical  - Verify backup"
+    '';
+  };
+  
+  # Shell aliases for backup management
+  programs.bash.shellAliases = {
+    backup-status = "check-backups";
+    backup-now = "rclone-backup-critical";
+    backup-verify = "rclone-verify-critical";
+  };
+  
+  programs.zsh.shellAliases = {
+    backup-status = "check-backups";
+    backup-now = "rclone-backup-critical";
+    backup-verify = "rclone-verify-critical";
+  };
+  
   home.activation.rcloneSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    RCLONE_CONF="$HOME/.config/rclone/rclone.conf"
-    
-    # Check if rclone is configured
-    if [ ! -s "$RCLONE_CONF" ] || ! ${pkgs.gnugrep}/bin/grep -q "^\[.*\]" "$RCLONE_CONF" 2>/dev/null; then
-      $DRY_RUN_CMD echo ""
-      $DRY_RUN_CMD echo "⚠️  Rclone not configured yet"
-      $DRY_RUN_CMD echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-      $DRY_RUN_CMD echo "Setup encrypted cloud backup:"
-      $DRY_RUN_CMD echo "  1. Run: rclone config"
-      $DRY_RUN_CMD echo "  2. Add your cloud provider (Google Drive, S3, etc.)"
-      $DRY_RUN_CMD echo "  3. Add a crypt remote wrapping it for encryption"
-      $DRY_RUN_CMD echo "  4. Test: rclone ls your-crypt-remote:"
-      $DRY_RUN_CMD echo "  5. Enable timers: systemctl --user enable --now rclone-backup-critical.timer"
-      $DRY_RUN_CMD echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-      $DRY_RUN_CMD echo ""
-    fi
+    echo "[backup] Rclone configuration and check-backups script installed"
+    echo "[backup] Verify: check-backups"
+    echo "[backup] Next steps:"
+    echo "  1. Configure remote:  rclone config"
+    echo "  2. Run first backup:  rclone-backup-critical"
+    echo "  3. Verify backup:     rclone-verify-critical"
+    echo "  4. Set up automation: systemctl --user enable --now rclone-backup-critical.timer"
   '';
 }

@@ -1,3 +1,7 @@
+# @file home/modules/security.nix
+# @description Security hardening with sandboxed applications and Firefox policies
+# @update-policy Update when adding new sandboxed apps or security policies
+
 { config, lib, pkgs, ... }:
 
 let

@@ -1,3 +1,7 @@
+# @file home/modules/cli.nix
+# @description Essential CLI utilities and shell aliases for daily workflows
+# @update-policy Update when adding new CLI tools or aliases
+
 { pkgs, ... }:
 
 {

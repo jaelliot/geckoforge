@@ -1,3 +1,7 @@
+# @file home/modules/elixir.nix
+# @description Elixir and Erlang development environment via asdf version manager
+# @update-policy Update when Erlang/Elixir versions change or asdf configuration needs adjustment
+
 { config, pkgs, ... }:
 
 let
@@ -85,11 +89,17 @@ in
       local plugin="$1"
       local version="$2"
       if ! "$ASDF_BIN" list "$plugin" 2>/dev/null | grep -Fx "$version" >/dev/null 2>&1; then
-        echo "[asdf] Installing $plugin $version ..."
-        "$ASDF_BIN" install "$plugin" "$version"
+        echo "[asdf] Installing $plugin $version..."
+        if ! "$ASDF_BIN" install "$plugin" "$version"; then
+          echo "[asdf] ERROR: Failed to install $plugin $version" >&2
+          echo "[asdf] Check build dependencies for $plugin" >&2
+          return 1
+        fi
       else
         echo "[asdf] $plugin $version already installed"
       fi
+      
+      echo "[asdf] Setting global $plugin version to $version"
       "$ASDF_BIN" global "$plugin" "$version"
     }
 
@@ -104,13 +114,32 @@ in
 
     "$ASDF_BIN" reshim
 
+    # Generate .tool-versions file in home directory
+    echo "[asdf] Generating ~/.tool-versions"
+    cat > "${toolVersions}" <<EOF
+erlang ${erlangVersion}
+elixir ${elixirVersion}
+nodejs $latest_node_minor
+EOF
+    echo "[asdf] Created ${toolVersions}"
+
+    # Install Hex and Rebar if mix is available
     if command -v mix >/dev/null 2>&1; then
+      echo "[asdf] Installing Hex and Rebar..."
       mix local.hex --force
       mix local.rebar --force
+      
+      # Install Phoenix archive
       if ! mix archive --list | grep -F "${phoenixArchive}-${phoenixArchiveVersion}" >/dev/null 2>&1; then
+        echo "[asdf] Installing Phoenix ${phoenixArchiveVersion}..."
         mix archive.install hex ${phoenixArchive} ${phoenixArchiveVersion} --force
       fi
+    else
+      echo "[asdf] WARNING: mix not found, skipping Hex/Rebar installation" >&2
     fi
+    
+    echo "[asdf] ✓ Elixir development environment ready"
+    echo "[asdf] Erlang: ${erlangVersion}, Elixir: ${elixirVersion}, Node.js: $latest_node_minor"
   '';
 
   programs.vscode = {

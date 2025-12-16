@@ -1,3 +1,7 @@
+# @file home/modules/macos-keyboard.nix
+# @description macOS-style keyboard remapping using Kanata for Command/Control swap
+# @update-policy Update when keyboard layout or remapping rules change
+
 { config, lib, pkgs, ... }:
 
 let
