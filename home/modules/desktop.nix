@@ -79,6 +79,56 @@ in
         Modules append fragments with mkBefore/mkAfter; desktop.nix handles final serialization.
       '';
     };
+    
+    compositor = {
+      backend = mkOption {
+        type = types.enum [ "OpenGL 3.1" "OpenGL 2.0" "XRender" ];
+        default = "OpenGL 3.1";
+        description = "KWin compositor rendering backend (OpenGL 3.1 recommended for performance)";
+      };
+      
+      animationSpeed = mkOption {
+        type = types.int;
+        default = 3;
+        description = "Animation speed (1-5, higher = faster animations)";
+      };
+      
+      disableBlur = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Disable blur effects (GPU intensive, improves performance)";
+      };
+      
+      vsync = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable VSync to reduce tearing";
+      };
+    };
+    
+    baloo = {
+      enable = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Enable Baloo file indexing (disable for better I/O performance)";
+      };
+      
+      excludeFolders = mkOption {
+        type = types.listOf types.str;
+        default = [
+          "$HOME/node_modules"
+          "$HOME/.cache"
+          "$HOME/.local/share/Trash"
+          "$HOME/go/pkg"
+          "$HOME/.cargo"
+          "$HOME/_build"
+          "$HOME/deps"
+          "$HOME/.venv"
+          "$HOME/__pycache__"
+        ];
+        description = "Directories to exclude from Baloo indexing";
+      };
+    };
 
     nightColor = {
       enable = mkEnableOption "KDE Night Color blue light filtering" // { default = true; };
@@ -275,8 +325,52 @@ in
       home.file.".config/kwinrc".text =
         let
           trimmed = map (fragment: strings.trim fragment) config.programs.kde.kwinrcFragments;
+          compositorCfg = config.programs.kde.compositor;
+          
+          # PERF: Compositor optimization fragment
+          compositorFragment = ''
+            [Compositing]
+            Backend=${compositorCfg.backend}
+            AnimationSpeed=${toString compositorCfg.animationSpeed}
+            GLPreferBufferSwap=AutoSwapStrategy
+            LatencyPolicy=Low
+            ${optionalString compositorCfg.vsync "GLCore=true"}
+            
+            [Plugins]
+            ${optionalString compositorCfg.disableBlur "blurEnabled=false"}
+            contrastEnabled=false
+            kwin4_effect_translucencyEnabled=false
+            wobblywindowsEnabled=false
+          '';
         in
-          (concatStringsSep "\n\n" trimmed) + "\n";
+          compositorFragment + "\n\n" + (concatStringsSep "\n\n" trimmed) + "\n";
+    })
+    
+    # PERF: Baloo file indexing control
+    (mkIf (!config.programs.kde.baloo.enable) {
+      home.file.".config/baloofilerc".text = ''
+        [Basic Settings]
+        Indexing-Enabled=false
+      '';
+    })
+    
+    (mkIf (config.programs.kde.baloo.enable) {
+      home.file.".config/baloofilerc".text = let
+        balooCfg = config.programs.kde.baloo;
+      in ''
+        [Basic Settings]
+        Indexing-Enabled=true
+        
+        [General]
+        folders=${concatStringsSep "," (map (f: "$HOME") [])}  
+        exclude filters=${concatStringsSep "," [
+          "*.o" "*.so" "*.a" "*.pyc" "*.elc"
+          "node_modules" "_build" "deps" ".cache"
+          "__pycache__" ".venv" "vendor"
+          "*.log" "*.tmp"
+        ]}
+        exclude folders=${concatStringsSep "," balooCfg.excludeFolders}
+      '';
     })
   ];
 }

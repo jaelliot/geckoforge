@@ -89,15 +89,40 @@
     # Build flags
     MAKEFLAGS = "-j$(nproc)";
     
+    # PERF: Build cache directories (explicit configuration)
+    GOCACHE = "${config.home.homeDirectory}/.cache/go-build";
+    GOMODCACHE = "${config.home.homeDirectory}/go/pkg/mod";
+    
     # Python
     PYTHONDONTWRITEBYTECODE = "1";  # Don't create .pyc files
+    PIP_CACHE_DIR = "${config.home.homeDirectory}/.cache/pip";
     
     # Node.js
     NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
+    NPM_CONFIG_CACHE = "${config.home.homeDirectory}/.cache/npm";
     
-    # Elixir/Erlang (set by asdf, documented here for reference)
-    # KERL_BUILD_DOCS="yes"
-    # KERL_INSTALL_HTMLDOCS="no"
+    # Elixir/Erlang build optimization
+    ERL_AFLAGS = "-kernel shell_history enabled";
+    
+    # Cargo (Rust) cache
+    CARGO_HOME = "${config.home.homeDirectory}/.cargo";
+    
+    # Nix build optimization
+    NIX_BUILD_CORES = "0";  # Use all available cores
+    
+    # === TELEMETRY DISABLING (duplicated from privacy.nix for development context) ===
+    # Note: These are also set in privacy.nix, but duplicated here for visibility
+    # in development context and to ensure they're set even if privacy.nix is disabled
+    
+    # Go telemetry (Go 1.23+)
+    GOTELEMETRY = "off";
+    GOTELEMETRYDIR = "/dev/null";
+    
+    # .NET CLI telemetry
+    DOTNET_CLI_TELEMETRY_OPTOUT = "1";
+    
+    # Terraform telemetry
+    CHECKPOINT_DISABLE = "1";
   };
 
   programs.go = {

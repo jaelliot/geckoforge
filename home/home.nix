@@ -15,6 +15,7 @@
     ./modules/macos-keyboard.nix
     ./modules/network.nix
     ./modules/power.nix
+    ./modules/privacy.nix
     ./modules/security.nix
     ./modules/shell.nix
     ./modules/thunderbird.nix
@@ -26,7 +27,7 @@
   home.homeDirectory = "/home/jay";
   home.stateVersion = "24.05";
 
-  programs.home-manager.enable = true;
+  programs.home-manager.enable = true;\n\n  # === PRIVACY: Disable all telemetry (see privacy.nix) ===\n  geckoforge.privacy = {\n    disableTelemetry = true;\n    disableAnalytics = true;\n  };
 
   # VS Code with all language support (migrated from existing setup)
   programs.vscode = {

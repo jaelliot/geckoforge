@@ -208,10 +208,39 @@ in
     home.packages = with pkgs; [
       powertop
       lm_sensors
+      acpi  # Battery status
     ] ++ optionals cfg.thermal.monitoring [
       stress
       s-tui  # Terminal UI for monitoring
     ];
+    
+    # PERF: Kernel sysctl parameters for performance (for reference/documentation)
+    # These require root access, so we create a reference file
+    xdg.configFile."sysctl.d/99-geckoforge-performance.conf".text = ''
+      # Memory Management - Desktop/Development Workload Optimization
+      vm.swappiness = 10                    # Prefer RAM over swap (default: 60)
+      vm.vfs_cache_pressure = 50            # Keep directory cache longer (default: 100)
+      vm.dirty_ratio = 10                   # Start background writes earlier (default: 20)
+      vm.dirty_background_ratio = 5         # More aggressive background writes (default: 10)
+      vm.max_map_count = 2147483642         # Increase for games and containers
+      
+      # File System Performance
+      fs.file-max = 2097152                 # Increase open file limit
+      fs.inotify.max_user_watches = 524288  # VS Code, Docker, file watchers
+      
+      # Network Performance (optional, commented out by default)
+      # net.core.rmem_max = 134217728
+      # net.core.wmem_max = 134217728
+      # net.ipv4.tcp_rmem = 4096 87380 134217728
+      # net.ipv4.tcp_wmem = 4096 65536 134217728
+    '';
+    
+    # Activation message for sysctl configuration
+    home.activation.sysctlInfo = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      echo "[power] Sysctl performance parameters generated at ~/.config/sysctl.d/99-geckoforge-performance.conf"
+      echo "[power] To apply system-wide: sudo cp ~/.config/sysctl.d/99-geckoforge-performance.conf /etc/sysctl.d/"
+      echo "[power] Then run: sudo sysctl --system"
+    '';
     
     # TLP configuration (system-level, shown for reference)
     # User must run: sudo cp ~/.config/tlp/tlp.conf /etc/tlp.conf

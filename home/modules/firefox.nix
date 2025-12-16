@@ -61,10 +61,70 @@
       };
 
       settings = {
+        # === Hardware Acceleration ===
         "gfx.webrender.all" = true;
         "media.ffmpeg.vaapi.enabled" = true;
         "layers.acceleration.force-enabled" = true;
 
+        # === TELEMETRY DISABLING (PRIVACY + PERFORMANCE) ===
+        
+        # Core telemetry
+        "toolkit.telemetry.enabled" = false;
+        "toolkit.telemetry.unified" = false;
+        "toolkit.telemetry.archive.enabled" = false;
+        "toolkit.telemetry.updatePing.enabled" = false;
+        "toolkit.telemetry.shutdownPingSender.enabled" = false;
+        "toolkit.telemetry.newProfilePing.enabled" = false;
+        "toolkit.telemetry.bhrPing.enabled" = false;
+        "toolkit.telemetry.firstShutdownPing.enabled" = false;
+        "toolkit.telemetry.server" = "";
+        
+        # Data reporting and health reports
+        "datareporting.policy.dataSubmissionEnabled" = false;
+        "datareporting.healthreport.uploadEnabled" = false;
+        "datareporting.healthreport.service.enabled" = false;
+        
+        # Crash reporting
+        "breakpad.reportURL" = "";
+        "browser.tabs.crashReporting.sendReport" = false;
+        "browser.crashReports.unsubmittedCheck.enabled" = false;
+        "browser.crashReports.unsubmittedCheck.autoSubmit2" = false;
+        
+        # Studies, experiments, and A/B testing
+        "app.shield.optoutstudies.enabled" = false;
+        "app.normandy.enabled" = false;
+        "app.normandy.api_url" = "";
+        "experiments.enabled" = false;
+        "experiments.supported" = false;
+        "experiments.activeExperiment" = false;
+        "messaging-system.rsexperimentloader.enabled" = false;
+        
+        # Coverage telemetry
+        "toolkit.coverage.opt-out" = true;
+        "toolkit.coverage.endpoint.base" = "";
+        
+        # Firefox Suggest (search telemetry)
+        "browser.urlbar.suggest.quicksuggest.sponsored" = false;
+        "browser.urlbar.suggest.quicksuggest.nonsponsored" = false;
+        "browser.urlbar.quicksuggest.dataCollection.enabled" = false;
+        
+        # Captive portal detection (phones home to detect.mozilla.com)
+        "captivedetect.canonicalURL" = "";
+        "network.captive-portal-service.enabled" = false;
+        
+        # Network connectivity checks
+        "network.connectivity-service.enabled" = false;
+        
+        # DNS over HTTPS telemetry
+        "network.trr.confirmation_telemetry_enabled" = false;
+        
+        # Personalization and recommendations
+        "browser.discovery.enabled" = false;
+        "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" = false;
+        "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features" = false;
+        
+        # === PRIVACY SETTINGS ===
+        
         "privacy.trackingprotection.enabled" = true;
         "privacy.trackingprotection.socialtracking.enabled" = true;
         "privacy.donottrackheader.enabled" = true;

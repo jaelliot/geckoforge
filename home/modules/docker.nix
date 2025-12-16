@@ -42,6 +42,52 @@ in
   };
   
   config = mkIf cfg.utilities.enable {
+    # PERF: Docker daemon configuration (for reference, requires root to apply)
+    xdg.configFile."docker/daemon.json".text = builtins.toJSON {
+      # Storage driver optimized for Btrfs (openSUSE default)
+      storage-driver = "overlay2";
+      storage-opts = [
+        "overlay2.override_kernel_check=true"
+      ];
+      
+      # Log rotation to prevent disk fill
+      log-driver = "json-file";
+      log-opts = {
+        max-size = "10m";
+        max-file = "3";
+      };
+      
+      # Resource limits
+      default-ulimits = {
+        nofile = {
+          Name = "nofile";
+          Hard = 64000;
+          Soft = 64000;
+        };
+      };
+      
+      # Performance optimizations
+      max-concurrent-downloads = 10;
+      max-concurrent-uploads = 5;
+      
+      # NVIDIA GPU support
+      runtimes = {
+        nvidia = {
+          path = "nvidia-container-runtime";
+          runtimeArgs = [];
+        };
+      };
+      
+      # IPv6 disabled (if not needed)
+      ipv6 = false;
+      
+      # Experimental features
+      experimental = false;
+      
+      # Live restore (containers keep running during daemon restart)
+      live-restore = true;
+    };
+    
     # Docker prune systemd units
     xdg.configFile."systemd/user/docker-prune.service".text = ''
       [Unit]

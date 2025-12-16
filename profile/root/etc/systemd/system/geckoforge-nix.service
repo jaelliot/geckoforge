@@ -1,8 +1,8 @@
 [Unit]
 Description=Geckoforge first boot: install Nix
 ConditionFirstBoot=yes
-After=network-online.target geckoforge-firstboot.service
-Wants=network-online.target
+After=network.target geckoforge-firstboot.service
+Wants=network.target
 
 [Service]
 Type=oneshot

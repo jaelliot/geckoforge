@@ -43,9 +43,10 @@
       ZSH_AUTOSUGGEST_STRATEGY=(history completion)
       
       # ===== History Configuration for DevOps =====
-      # Large history size for complex command recall
-      HISTSIZE=50000
-      SAVEHIST=50000
+      # PERF: Optimized history size (10k is sufficient, faster shell startup)
+      HISTSIZE=10000
+      SAVEHIST=10000
+      HISTFILE="$HOME/.cache/zsh/history"  # Store in cache dir
       
       # Deduplicate commands in history
       setopt HIST_IGNORE_DUPS           # Don't record duplicate consecutive commands
