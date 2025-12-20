@@ -9,6 +9,7 @@
     ./modules/development.nix
     ./modules/docker.nix
     ./modules/elixir.nix
+    ./modules/espanso.nix
     ./modules/firefox.nix
     ./modules/gaming.nix
     ./modules/kde-theme.nix

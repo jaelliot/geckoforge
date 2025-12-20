@@ -119,6 +119,18 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 - VS Code, Cursor, WebStorm (via script setup)
 - MongoDB Compass, DBeaver, Postman (Flatpak)
 
+### ⌨️ Text Expansion (espanso)
+
+- **espanso integration** - System-wide text expansion
+- **Cross-platform shortcuts** - Same config works on Linux and Windows WSL
+- **Declarative configuration** - Managed via Home-Manager
+- **Auto-start on login** - systemd user service
+- **Useful defaults** - Date/time, git commits, symbols, paths
+- **Customizable** - Edit `~/.config/espanso/match/user.yml`
+- **Interactive search** - `Alt+Space` to browse available shortcuts
+
+**See:** [Text Expander Guide](docs/text-expander.md)
+
 ### ⌨️ macOS-style Keyboard Experience
 
 - **Kanata-powered remapping** - Swap Command/Control semantics system-wide
@@ -127,7 +139,7 @@ Built on **openSUSE Leap 15.6** (enterprise-grade stability) with **KDE Plasma**
 - **Declarative option** - Reapply configuration via `geckoforge.macosKeyboard`
 - **Verification tooling** - `scripts/test-macos-keyboard.sh` validates setup
 
-### �🔒 System Resilience
+### 🔒 System Resilience
 
 - **Btrfs filesystem** - Copy-on-write, compression, snapshots
 - **Snapper integration** - Automatic pre/post-update snapshots
