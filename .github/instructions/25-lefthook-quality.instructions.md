@@ -88,7 +88,7 @@ pre-commit:
 ### 3. KIWI XML Validation
 ```yaml
     kiwi-validate:
-      glob: "profiles/**/config.kiwi.xml"
+      glob: "profile/config.xml"
       run: |
         xmllint --noout {staged_files} || {
           echo "❌ KIWI XML validation failed"
@@ -192,11 +192,12 @@ pre-commit:
 pre-push:
   commands:
     verify-packages:
-      glob: "profiles/**/config.kiwi.xml"
+      glob: "profile/config.xml"
       run: |
         echo "🔍 Verifying zypper packages..."
-        # Extract package names from XML
-        packages=$(xmllint --xpath '//package/text()' {all_files} | sort -u)
+        # Extract package names from XML (KIWI v10+ uses name attribute)
+        packages=$(xmllint --xpath '//package/@name' {all_files} 2>/dev/null | \
+                   sed 's/name="\([^"]*\)"/\1\n/g' | sort -u)
         
         for pkg in $packages; do
           if ! zypper search -x "$pkg" &>/dev/null; then
@@ -519,7 +520,7 @@ pre-commit:
         done
     
     xml-validate:
-      glob: "profiles/**/config.kiwi.xml"
+      glob: "profile/config.xml"
       run: xmllint --noout {staged_files}
     
     anti-patterns:

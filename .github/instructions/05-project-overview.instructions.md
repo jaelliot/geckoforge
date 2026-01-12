@@ -161,9 +161,11 @@ version: 0.3.0
 ```
 geckoforge/
 ├── profile/  # KIWI profile
-│   ├── config.kiwi.xml             # Package lists, repos
-│   ├── root/                       # File overlays
-│   └── scripts/                    # First-boot scripts
+│   ├── config.xml              # KIWI NG configuration (NOT .kiwi.xml!)
+│   ├── config.sh               # Post-prepare script
+│   └── root/                   # File overlays
+│       ├── etc/systemd/system/ # First-boot services
+│       └── usr/local/sbin/     # First-boot scripts
 ├── home/                           # Home-Manager config
 │   ├── flake.nix
 │   ├── home.nix
@@ -172,10 +174,11 @@ geckoforge/
 │   ├── firstrun-user.sh            # Main wizard
 │   ├── setup-docker.sh
 │   └── docker-nvidia-install.sh
+├── themes/                         # JuxTheme source files
 ├── docs/                           # Documentation
-│   ├── architecture/
-│   ├── guides/
-│   └── daily-summaries/
+│   ├── audits/
+│   ├── research/
+│   └── summaries/
 └── tools/                          # Build tools
     ├── kiwi-build.sh
     └── test-iso.sh
@@ -185,16 +188,19 @@ geckoforge/
 
 ```bash
 # 1. Make changes to profile/scripts/home
-$EDITOR profile/config.kiwi.xml
+$EDITOR profile/config.xml
 
-# 2. Build ISO
+# 2. Validate schema
+kiwi-ng system validate --description profile/
+
+# 3. Build ISO
 ./tools/kiwi-build.sh profile
 
-# 3. Test in VM
+# 4. Test in VM
 ./tools/test-iso.sh out/geckoforge-*.iso
 
-# 4. Deploy to laptop (if tests pass)
-# 5. Deploy to workstation (after 1-2 weeks on laptop)
+# 5. Deploy to laptop (if tests pass)
+# 6. Deploy to workstation (after 1-2 weeks on laptop)
 ```
 
 ## Testing Strategy

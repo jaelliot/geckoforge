@@ -79,7 +79,7 @@
 
 ## Already Configured (in geckoforge)
 
-✅ **TLP power management** - Package included in ISO (profile/config.kiwi.xml)  
+✅ **TLP power management** - Package included in ISO (profile/config.xml)  
 ✅ **NVIDIA Dynamic PM** - Configured in firstboot-nvidia.sh  
 ✅ **Hybrid graphics** - PRIME offload ready  
 ✅ **Suspend/resume** - NVIDIA services enabled  

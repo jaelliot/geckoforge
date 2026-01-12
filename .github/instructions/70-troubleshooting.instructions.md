@@ -59,16 +59,17 @@ resolvectl status  # DNS configuration
 #### Check 1: KIWI Configuration
 ```bash
 # Validate XML syntax
-xmllint --noout profile/config.kiwi.xml
+xmllint --noout profile/config.xml
 
-# Check for typos in package names
-grep '<package>' profile/config.kiwi.xml
+# Check package elements use correct syntax
+grep '<package name=' profile/config.xml
 ```
 
 **Common causes:**
 - Malformed XML (unclosed tags)
 - Non-existent package names
 - Incorrect repository URLs
+- Wrong file name (must be config.xml, NOT config.kiwi.xml)
 
 #### Check 2: Package Availability
 ```bash
@@ -82,7 +83,7 @@ zypper refresh
 **Fix:**
 ```bash
 # Correct package name
-$EDITOR profile/config.kiwi.xml
+$EDITOR profile/config.xml
 
 # Rebuild
 ./tools/kiwi-build.sh profile
@@ -93,7 +94,7 @@ $EDITOR profile/config.kiwi.xml
 #### Check: Package List
 ```bash
 # List all packages in config
-grep '<package>' profile/config.kiwi.xml | wc -l
+grep '<package name=' profile/config.xml | wc -l
 
 # Identify large packages
 zypper info package-name | grep "Installed Size"
@@ -107,7 +108,7 @@ zypper info package-name | grep "Installed Size"
 **Fix:**
 ```bash
 # Remove unnecessary packages
-$EDITOR profile/config.kiwi.xml
+$EDITOR profile/config.xml
 
 # Move dev tools to Home-Manager
 $EDITOR home/modules/development.nix

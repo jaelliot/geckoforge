@@ -43,7 +43,7 @@ pre-commit:
         fi
     
     xml-validate:
-      glob: "profiles/**/config.kiwi.xml"
+      glob: "profile/config.xml"
       run: |
         if command -v xmllint >/dev/null 2>&1; then
           xmllint --noout {staged_files} || {
@@ -56,7 +56,7 @@ pre-commit:
     
     anti-patterns:
       glob: "**/*.{sh,nix,md,xml}"
-      run: tools/validate/check-anti-patterns.sh
+      run: tools/check-anti-patterns.sh
     
     executable-check:
       glob: "scripts/**/*.sh"
@@ -73,7 +73,7 @@ pre-push:
   parallel: false
   commands:
     validate-layers:
-      run: tools/validate/check-layer-assignments.sh
+      run: tools/check-layer-assignments.sh
     
     docs-check:
       run: |

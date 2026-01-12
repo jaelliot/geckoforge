@@ -81,7 +81,7 @@ cd packer
 ```bash
 # IN THE PACKER VM (with shared folder)
 cd /media/sf_geckoforge  # Or /mnt/geckoforge
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # Output: out/geckoforge-leap-15.6-*.iso
 # Copy to host, burn to USB, deploy to laptop
@@ -155,7 +155,7 @@ cd packer && ./build.sh
 cd /media/sf_geckoforge
 
 # Build KIWI ISO
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # Wait 15-20 minutes
 # Output: out/geckoforge-leap-15.6-Build7.10.iso
@@ -184,29 +184,27 @@ sudo dd if=geckoforge-leap-15.6-*.iso of=/dev/sdX bs=4M status=progress
 
 ```
 geckoforge/
-├── packer/                    # Packer templates (testing)
+├── packer/                    # Packer templates (alternative build)
 │   ├── opensuse-leap-geckoforge.pkr.hcl
 │   ├── build.sh
 │   └── http/autoyast.xml
 │
-├── profiles/                  # KIWI profiles (deployment)
-│   └── leap-15.6/
-│       └── kde-nvidia/
-│           ├── config.kiwi.xml
-│           ├── root/
-│           └── scripts/
+├── profile/                   # KIWI profile (primary build method)
+│   ├── config.xml             # KIWI NG configuration (NOT .kiwi.xml!)
+│   ├── config.sh              # Post-prepare script
+│   └── root/                  # File overlays
+│       ├── etc/
+│       └── usr/local/sbin/    # First-boot scripts
 │
 ├── tools/
-│   └── kiwi-build.sh         # Build KIWI ISO (run in VM)
+│   └── kiwi-build.sh         # Build KIWI ISO
 │
 ├── docs/
 │   ├── DEPLOYMENT-STRATEGY.md (this file)
-│   ├── SETUP-STEP-BY-STEP.md  # Packer VM setup
-│   └── packer-automation.md    # Packer details
+│   └── BUILD-ISO-IN-VM.md     # VM build instructions
 │
-└── out/                       # Build outputs
-    ├── *.ova                  # Packer VMs
-    └── *.iso                  # KIWI ISOs (created in VM)
+└── out/                       # Build outputs (gitignored)
+    └── *.iso                  # KIWI ISOs
 ```
 
 ---
@@ -254,7 +252,7 @@ docker ps
 # 1. Test everything in Packer VM
 # 2. Build ISO in VM:
 cd /media/sf_geckoforge
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 
 # 3. Copy ISO to host:
 # ISO appears in out/ directory (shared)
@@ -330,7 +328,7 @@ df -h /
 
 # Check KIWI build logs
 cd /media/sf_geckoforge
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia 2>&1 | tee build.log
+./tools/kiwi-build.sh profile 2>&1 | tee build.log
 ```
 
 ### ISO Won't Boot on Laptop

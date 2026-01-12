@@ -34,38 +34,29 @@ Geckoforge includes the **Mystical Blue (Jux)** theme - a professional dark blue
 
 ## Quick Activation
 
-### Option 1: Setup Script (Recommended)
+### Option 1: Home-Manager (Recommended - Declarative)
 
-```bash
-cd ~/git/geckoforge
-./scripts/setup-jux-theme.sh
-```
-
-**Then:**
-1. Log out
-2. Log back in
-3. Theme is active!
-
-### Option 2: Home-Manager (Declarative)
-
-Edit `~/git/home/home.nix`:
+Edit `~/git/geckoforge/home/home.nix`:
 
 ```nix
 {
   imports = [ ./modules/kde-theme.nix ];
   
-  programs.kde.theme.enable = true;
+  programs.kde.theme = {
+    enable = true;
+    nightColor.enable = true;  # Optional: Enable blue light reduction
+  };
 }
 ```
 
 Apply changes:
 ```bash
-home-manager switch --flake ~/git/home
+home-manager switch --flake ~/git/geckoforge/home
 ```
 
 **Then:** Log out and back in.
 
-### Option 3: Manual (KDE System Settings)
+### Option 2: Manual (KDE System Settings)
 
 1. **Color Scheme:**
    - System Settings → Appearance → Colors

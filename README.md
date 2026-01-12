@@ -303,10 +303,11 @@ Geckoforge uses a **four-layer architecture** for reproducibility and maintainab
 
 ```
 geckoforge/
-├── profile/          # KIWI image definition (was profiles/leap-15.6/kde-nvidia/)
-│   ├── config.kiwi.xml
-│   ├── root/         # File overlays
-│   └── scripts/      # First-boot automation
+├── profile/          # KIWI image definition
+│   ├── config.xml    # KIWI NG configuration (NOT .kiwi.xml!)
+│   ├── config.sh     # Post-prepare script (sets permissions)
+│   ├── root/         # File overlays (copied to image)
+│   └── scripts/      # First-boot automation (DEPRECATED - use root/usr/local/sbin/)
 ├── home/             # Home-Manager (Nix) configuration
 │   ├── flake.nix
 │   ├── home.nix

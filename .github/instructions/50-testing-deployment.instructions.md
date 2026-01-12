@@ -167,13 +167,13 @@ file out/geckoforge-*.iso
 
 #### "File not found"
 **Symptom**: KIWI can't copy overlay files  
-**Cause**: Path mismatch in config.kiwi.xml  
-**Fix**: Check paths in `<file>` elements
+**Cause**: File missing from root/ overlay directory  
+**Fix**: Check files exist in `profile/root/` with correct paths
 
 #### "Repository metadata invalid"
 **Symptom**: Can't access openSUSE repos  
 **Cause**: Network issue or repo URL changed  
-**Fix**: Check repo URLs in config.kiwi.xml
+**Fix**: Check repo URLs in config.xml
 
 ---
 
@@ -344,7 +344,7 @@ systemd-analyze blame
 
 ### If VM Test Fails:
 1. Review build logs: `less work/*.log`
-2. Check config.kiwi.xml for errors
+2. Check config.xml for errors (run `kiwi-ng system validate --description profile/`)
 3. Verify package names with `zypper search`
 4. Fix issues
 5. Rebuild ISO
@@ -425,15 +425,15 @@ elixir --version
 
 3. **Build test ISO with new version**
    ```bash
-   # Update KIWI config
-   $EDITOR profile/config.kiwi.xml
+   # Update KIWI config for new repos
+   $EDITOR profile/config.xml
    # Change repos to 15.7
    
    # Build test ISO
-   ./tools/kiwi-build.sh profiles/leap-15.7/kde-nvidia
+   ./tools/kiwi-build.sh profile
    
    # Test in VM for 1 week
-   ./tools/test-iso.sh out/geckoforge-leap157-*.iso
+   ./tools/test-iso.sh out/geckoforge-*.iso
    ```
 
 ### Upgrade Procedure (In-Place)

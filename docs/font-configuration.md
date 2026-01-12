@@ -124,7 +124,7 @@ home.packages = with pkgs; [
 ```
 
 ### System-wide Fonts
-Add to KIWI profile `config.kiwi.xml`:
+Add to KIWI profile `config.xml`:
 ```xml
 <package>your-font-package</package>
 ```

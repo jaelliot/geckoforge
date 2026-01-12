@@ -47,11 +47,11 @@ Need a package?
 ### Where to Specify:
 **Layer 1 (KIWI)**:
 ```xml
-<!-- profile/config.kiwi.xml -->
+<!-- profile/config.xml -->
 <packages type="image">
-  <package>kernel-default</package>
-  <package>plasma5-desktop</package>
-  <package>docker</package>
+  <package name="kernel-default"/>
+  <package name="plasma5-desktop"/>
+  <package name="docker"/>
 </packages>
 ```
 
@@ -315,7 +315,7 @@ sudo zypper install code
 
 ### openSUSE Repos (Layer 1):
 ```xml
-<!-- config.kiwi.xml -->
+<!-- config.xml -->
 <repository type="rpm-md">
   <source path="http://download.opensuse.org/distribution/leap/15.6/repo/oss/"/>
 </repository>

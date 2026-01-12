@@ -159,7 +159,7 @@ profiles/.../root/etc/systemd/system/setup-docker.service
 
 ### Correct layer responsibility:
 ```yaml
-# ISO Layer (KIWI config.kiwi.xml)
+# ISO Layer (KIWI config.xml)
 - Base packages (kernel, NetworkManager, KDE)
 - Repository configuration
 - System structure

@@ -238,22 +238,23 @@ sudo reboot
 
 ### Minimal Build (Faster)
 
-Edit `profiles/leap-15.6/kde-nvidia/config.kiwi.xml`:
+Edit `profile/config.xml`:
 
 ```xml
 <!-- Remove optional packages -->
-<package name="games-*"/>  <!-- Remove games -->
-<package name="libreoffice"/>  <!-- Add office later via Flatpak -->
+<!-- Comment out or remove packages you don't need -->
+<!-- <package name="games-*"/> -->
+<!-- <package name="libreoffice"/> -->  <!-- Add office later via Flatpak -->
 ```
 
 Rebuild:
 ```bash
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+./tools/kiwi-build.sh profile
 ```
 
 ### Add Pre-installed Software
 
-Edit `config.kiwi.xml`:
+Edit `profile/config.xml`:
 
 ```xml
 <packages type="image">
@@ -289,13 +290,14 @@ sudo usermod -aG docker $USER
 
 ```bash
 # Check logs
-cd /media/sf_geckoforge
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia 2>&1 | tee build.log
+cd ~/geckoforge
+./tools/kiwi-build.sh profile 2>&1 | tee build.log
 
 # Common issues:
 # 1. Insufficient disk space → Clean up
 # 2. Docker daemon not running → Start it
 # 3. Network issues → Check connectivity
+# 4. Wrong config file name → Must be config.xml NOT config.xml
 ```
 
 ### ISO doesn't appear on host
@@ -333,17 +335,10 @@ ls -la /media/sf_geckoforge/out/
 #!/bin/bash
 # build-all-isos.sh
 
-PROFILES=(
-  "profiles/leap-15.6/kde-nvidia"
-  # Add more profiles
-)
+# Default profile (v0.4.0 flattened structure)
+./tools/kiwi-build.sh profile
 
-for profile in "${PROFILES[@]}"; do
-  echo "Building $profile..."
-  ./tools/kiwi-build.sh "$profile"
-done
-
-echo "All ISOs built in out/"
+echo "ISO built in out/"
 ```
 
 ### CI/CD Integration
@@ -358,8 +353,8 @@ VBoxManage startvm "geckoforge-test" --type headless
 ssh -p 2222 jay@localhost
 
 # Run build
-cd /media/sf_geckoforge
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+cd ~/geckoforge
+./tools/kiwi-build.sh profile
 
 # Shutdown VM
 VBoxManage controlvm "geckoforge-test" poweroff

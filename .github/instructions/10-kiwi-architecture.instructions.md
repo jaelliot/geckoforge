@@ -285,10 +285,10 @@ profile/
 #### TLP Installation (Layer 1: KIWI)
 
 ```xml
-<!-- profile/config.kiwi.xml -->
+<!-- profile/config.xml -->
 <packages type="image">
-  <package>tlp</package>
-  <package>tlp-rdw</package>  <!-- For NetworkManager integration -->
+  <package name="tlp"/>
+  <package name="tlp-rdw"/>  <!-- For NetworkManager integration -->
 </packages>
 ```
 
@@ -475,28 +475,29 @@ Before committing changes:
 
 ### Adding a New System Package
 ```xml
-<!-- profiles/.../config.kiwi.xml -->
+<!-- profile/config.xml -->
 <packages type="image">
-  <package>your-package-here</package>
+  <package name="your-package-here"/>
 </packages>
 ```
 
 ### Adding First-Boot Automation
 ```bash
-# 1. Create script: profiles/.../scripts/firstboot-something.sh
+# 1. Create script: profile/root/usr/local/sbin/firstboot-something.sh
 #!/usr/bin/env bash
 # System-level setup that runs once
 
-# 2. Create systemd unit: profiles/.../root/etc/systemd/system/
+# 2. Create systemd unit: profile/root/etc/systemd/system/
 [Unit]
 Description=Your first-boot task
-ConditionFirstBoot=yes
+ConditionPathExists=!/var/lib/geckoforge/.firstboot-something-done
 
 [Service]
 Type=oneshot
 ExecStart=/usr/local/sbin/firstboot-something.sh
+ExecStartPost=/usr/bin/touch /var/lib/geckoforge/.firstboot-something-done
 
-# 3. Enable unit: profiles/.../root/etc/systemd/system/multi-user.target.wants/
+# 3. Enable unit: profile/root/etc/systemd/system/multi-user.target.wants/
 ln -s ../your-service.service
 ```
 
