@@ -21,11 +21,11 @@ if ! command -v kiwi-ng >/dev/null 2>&1; then
     sudo zypper install -y python3-kiwi kiwi-systemdeps-iso-media kiwi-systemdeps-bootloaders
 fi
 
-# Verify profile exists
-if [[ ! -f "$PROFILE_PATH/config.kiwi.xml" ]]; then
-    echo "Error: No config.kiwi.xml found in $PROFILE_PATH"
+# Verify profile exists (KIWI accepts config.xml or *.kiwi)
+if [[ ! -f "$PROFILE_PATH/config.xml" ]] && [[ ! -f "$PROFILE_PATH/config.kiwi" ]]; then
+    echo "Error: No config.xml found in $PROFILE_PATH"
     echo "Available profiles:"
-    find "$REPO_ROOT" -name "config.kiwi.xml" -printf "  %h\n" 2>/dev/null || echo "  None found"
+    find "$REPO_ROOT" -name "config.xml" -printf "  %h\n" 2>/dev/null || echo "  None found"
     exit 1
 fi
 
