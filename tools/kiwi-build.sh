@@ -1,26 +1,54 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
+# geckoforge KIWI ISO Builder
+# Builds openSUSE Leap 15.6 KDE live ISO directly on the host
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 PROFILE="${1:-profile}"
+PROFILE_PATH="$REPO_ROOT/$PROFILE"
+OUT_DIR="$REPO_ROOT/out"
 
-mkdir -p out work
+# Ensure we're running on openSUSE
+if ! grep -q "openSUSE" /etc/os-release 2>/dev/null; then
+    echo "Warning: This script is designed for openSUSE. Proceed with caution."
+fi
 
-# Use Docker only (project standard)
-if ! command -v docker >/dev/null 2>&1; then
-    echo "Error: Docker is required but not found"
-    echo "Install Docker: sudo zypper install docker"
+# Install KIWI if not present
+if ! command -v kiwi-ng >/dev/null 2>&1; then
+    echo "Installing KIWI NG..."
+    sudo zypper install -y python3-kiwi kiwi-systemdeps-iso-media kiwi-systemdeps-bootloaders
+fi
+
+# Verify profile exists
+if [[ ! -f "$PROFILE_PATH/config.kiwi.xml" ]]; then
+    echo "Error: No config.kiwi.xml found in $PROFILE_PATH"
+    echo "Available profiles:"
+    find "$REPO_ROOT" -name "config.kiwi.xml" -printf "  %h\n" 2>/dev/null || echo "  None found"
     exit 1
 fi
 
-RUNCMD=docker
-# Using openSUSE Tumbleweed with KIWI NG installed
-IMG="opensuse/tumbleweed:latest"
+# Create output directory
+mkdir -p "$OUT_DIR"
 
-echo "Pulling base image and installing KIWI NG..."
-$RUNCMD pull "$IMG"
-$RUNCMD run --rm -it \
-  -v "$PWD/$PROFILE":/build/desc:z \
-  -v "$PWD/out":/build/out:z \
-  -v "$PWD/work":/build/work:z \
-  --privileged \
-  "$IMG" \
-  bash -c "zypper --non-interactive install python3-kiwi && kiwi-ng --color-output --type iso system build --description /build/desc --target-dir /build/out"
+echo "========================================"
+echo "geckoforge ISO Builder"
+echo "========================================"
+echo "Profile:    $PROFILE_PATH"
+echo "Output:     $OUT_DIR"
+echo "========================================"
+
+# Build the ISO
+echo "Starting KIWI build (this takes 15-20 minutes)..."
+sudo kiwi-ng --color-output \
+    --type iso \
+    system build \
+    --description "$PROFILE_PATH" \
+    --target-dir "$OUT_DIR"
+
+echo "========================================"
+echo "Build complete!"
+echo "ISO location: $OUT_DIR"
+ls -lh "$OUT_DIR"/*.iso 2>/dev/null || echo "No ISO found - check for errors above"
+echo "========================================"

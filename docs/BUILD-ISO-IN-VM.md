@@ -1,27 +1,26 @@
-# Building KIWI ISO in VirtualBox VM
+# Building KIWI ISO in VM
 
-**Purpose**: Build a bootable deployment ISO from within your testing VM
+**Purpose**: Build a bootable deployment ISO from within a VM (VirtualBox or VMware Fusion)
 
 ---
 
 ## Prerequisites
 
-1. ✅ VirtualBox VM running openSUSE Leap 15.6 + KDE
-2. ✅ Shared folder configured: `/media/sf_geckoforge`
-3. ✅ Docker installed in VM
-4. ✅ Sufficient disk space (~15GB free)
+1. ✅ VM running openSUSE Leap 15.6 or Tumbleweed
+2. ✅ Sufficient disk space (~15GB free)
+3. ✅ Internet connection for package downloads
 
 ---
 
 ## Why Build in VM?
 
 **Problem**: WSL2 can't build bootable ISOs (kernel restrictions)  
-**Solution**: Use the testing VM as the build environment
+**Solution**: Use a VM as the build environment
 
 **Benefits**:
 - ✅ Full Linux kernel access
+- ✅ No Docker permission issues
 - ✅ Test configs before building
-- ✅ Shared folder = ISO available on host
 - ✅ No dual-boot or separate Linux machine needed
 
 ---
@@ -29,15 +28,16 @@
 ## Quick Build
 
 ```bash
-# Inside VM
-cd /media/sf_geckoforge
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+# Clone the repo (or pull latest)
+cd ~/geckoforge
+git pull
+
+# Build the ISO (installs KIWI automatically if needed)
+./tools/kiwi-build.sh profile
 ```
 
 **Time**: 15-20 minutes  
-**Output**: `out/geckoforge-leap-15.6-Build*.iso`
-
-The ISO is **immediately available on your host** via shared folder!
+**Output**: `out/geckoforge-leap-15.6-*.iso`
 
 ---
 
@@ -49,19 +49,13 @@ The ISO is **immediately available on your host** via shared folder!
 # Login to VM
 # Open Konsole (terminal)
 
-# Verify shared folder is mounted
-ls /media/sf_geckoforge
-# Should show: home/ scripts/ docs/ profiles/ etc.
+# Clone repo if not already done
+git clone https://github.com/jaelliot/geckoforge.git
+cd geckoforge
 
-# Navigate to repo
-cd /media/sf_geckoforge
-
-# Verify Docker is running
-sudo systemctl status docker
-# Should show: active (running)
-
-# If not running:
-sudo systemctl start docker
+# Or update existing repo
+cd ~/geckoforge
+git pull
 ```
 
 ### Step 2: Check Disk Space
@@ -72,31 +66,29 @@ df -h /
 
 # If low, clean up:
 sudo zypper clean --all
-docker system prune -a
 ```
 
 ### Step 3: Optional - Take Snapshot
 
 **Before building, take a VM snapshot:**
 
-1. VirtualBox window → **Machine** → **Take Snapshot**
-2. Name: `before-kiwi-build`
-3. Click **OK**
+**VirtualBox**: Machine → Take Snapshot  
+**VMware Fusion**: Virtual Machine → Snapshots → Take Snapshot
 
-This lets you revert to clean state after build.
+Name it `before-kiwi-build` - lets you revert if needed.
 
 ### Step 4: Build ISO
 
 ```bash
-cd /media/sf_geckoforge
+cd ~/geckoforge
 
-# Start build
-./tools/kiwi-build.sh profiles/leap-15.6/kde-nvidia
+# Start build (will install KIWI if not present)
+./tools/kiwi-build.sh profile
 ```
 
 **What happens:**
-1. Pulls KIWI container image (~2 min)
-2. Installs KIWI NG in container (~3 min)
+1. Installs KIWI NG if missing (~2 min)
+2. Validates profile configuration
 3. Builds openSUSE system image (~10 min)
 4. Creates bootable ISO (~5 min)
 
@@ -106,33 +98,55 @@ cd /media/sf_geckoforge
 ```
 Building image: geckoforge-leap-15.6
 ...
-ISO created: out/geckoforge-leap-15.6-Build7.10.iso
+ISO created: out/geckoforge-leap-15.6-*.iso
 ```
 
 ### Step 5: Verify ISO
 
 ```bash
 # In VM
-ls -lh /media/sf_geckoforge/out/
+ls -lh ~/geckoforge/out/
 
 # Should show:
-# geckoforge-leap-15.6-Build7.10.iso  (~2-4GB)
+# geckoforge-leap-15.6-*.iso  (~2-4GB)
 ```
 
-### Step 6: Access ISO on Host
+### Step 6: Transfer ISO to Host (Optional)
 
-**On your host (Windows/WSL2):**
-
+**Option A: SCP from host**
 ```bash
-cd ~/Documents/Vaidya-Solutions-Code/geckoforge/out
-ls -lh
+# From your Mac/Windows terminal
+scp user@VM_IP:~/geckoforge/out/*.iso ~/Downloads/
+```
 
-# Same ISO is there! (via shared folder)
+**Option B: Shared folder (if configured)**
+```bash
+# Copy to shared folder
+cp ~/geckoforge/out/*.iso /mnt/vm-shared/
 ```
 
 ---
 
 ## Burn ISO to USB
+
+### On macOS
+
+```bash
+# Find USB device
+diskutil list
+
+# Unmount USB (replace diskN with your disk)
+diskutil unmountDisk /dev/diskN
+
+# Burn ISO (CAREFUL: double-check device!)
+sudo dd if=geckoforge-leap-15.6-*.iso \
+        of=/dev/rdiskN \
+        bs=4m \
+        status=progress
+
+# Eject
+diskutil eject /dev/diskN
+```
 
 ### On Windows (with Rufus)
 
@@ -199,7 +213,6 @@ After install completes:
 1. Reboot (remove USB)
 2. Login to KDE
 3. Everything is pre-configured!
-   - Docker installed
    - NVIDIA drivers detected and installed
    - All scripts in `/opt/geckoforge`
    - Home-Manager ready to apply
