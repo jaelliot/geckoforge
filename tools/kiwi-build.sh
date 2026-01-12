@@ -18,9 +18,9 @@ IMG="opensuse/tumbleweed:latest"
 echo "Pulling base image and installing KIWI NG..."
 $RUNCMD pull "$IMG"
 $RUNCMD run --rm -it \
-  -v "$PWD/$PROFILE":/build/desc:ro \
-  -v "$PWD/out":/build/out \
-  -v "$PWD/work":/build/work \
+  -v "$PWD/$PROFILE":/build/desc:z \
+  -v "$PWD/out":/build/out:z \
+  -v "$PWD/work":/build/work:z \
   --privileged \
   "$IMG" \
   bash -c "zypper --non-interactive install python3-kiwi && kiwi-ng --color-output --type iso system build --description /build/desc --target-dir /build/out"
