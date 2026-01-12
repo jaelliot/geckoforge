@@ -32,9 +32,12 @@ geckoforge/
 │   └── workflows/              # GitHub Actions
 ├── docs/
 │   ├── audits/                 # Quality audits
+│   ├── daily-summaries/        # Development session logs
+│   │   ├── 2025-10/
+│   │   ├── 2025-12/
+│   │   └── 2026-01/
 │   ├── prompts/                # AI prompt templates
-│   ├── research/               # Research documents and audit reports
-│   └── summaries/              # Development session logs
+│   └── research/               # Research documents and audit reports
 ├── examples/
 │   ├── cuda-nv-smi/            # CUDA container example
 │   ├── postgres-docker-compose/ # PostgreSQL with Docker
