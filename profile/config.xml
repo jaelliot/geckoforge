@@ -2,11 +2,12 @@
 <image schemaversion="8.0" name="geckoforge-leap156-kde">
   <description type="system">
     <author>Jay-Alexander Elliot</author>
+    <contact>alexander.elliot.it@protonmail.com</contact>
     <specification>Leap 15.6 KDE Plasma live image with Snapper and NVIDIA repo preconfigured.</specification>
   </description>
 
   <preferences>
-    <type image="iso" primary="true" flags="overlay" hybrid="true"/>
+    <type image="iso" primary="true" flags="overlay" mediacheck="true"/>
     <version>0.1.0</version>
     <rpm-excludedocs>true</rpm-excludedocs>
   </preferences>
@@ -18,95 +19,102 @@
   <repository type="rpm-md"><source path="https://download.nvidia.com/opensuse/leap/15.6/"/></repository>
 
   <packages type="bootstrap">
-    <package>aaa_base</package>
-    <package>filesystem</package>
-    <package>glibc</package>
-    <package>rpm</package>
-    <package>zypper</package>
-    <package>openSUSE-release</package>
+    <package name="aaa_base"/>
+    <package name="filesystem"/>
+    <package name="glibc"/>
+    <package name="rpm"/>
+    <package name="zypper"/>
+    <package name="openSUSE-release"/>
   </packages>
 
   <packages type="image">
-    <package>kernel-default</package>
-    <package>dracut</package>
-    <package>NetworkManager</package>
-    <package>firewalld</package>
-    <package>apparmor-parser</package>
-    <package>snapper</package>
-    <package>btrfsprogs</package>
-    <package>flatpak</package>
-    <package>patterns-kde-kde_plasma</package>
-    <package>plasma5-desktop</package>
-    <package>plasma5-workspace</package>
-    <package>sddm</package>
-    <package>dolphin</package>
-    <package>konsole</package>
-    <package>kate</package>
-    <package>gwenview</package>
-    <package>okular</package>
-    <package>ark</package>
-    <package>spectacle</package>
-    <package>plasma-nm</package>
-    <package>plasma-pa</package>
-    <package>kscreen</package>
-    <package>powerdevil</package>
-    <package>kwalletmanager</package>
-    <package>bluedevil5</package>
-    <package>bash-completion</package>
-    <package>zsh</package>
-    <package>zsh-completions</package>
-    <package>curl</package>
-    <package>vim</package>
-    <package>liberation-fonts</package>
-    <package>dejavu-fonts</package>
-    <package>noto-sans-fonts</package>
-    <package>noto-emoji-fonts</package>
-    <package>fontconfig</package>
+    <!-- Kernel and Boot -->
+    <package name="kernel-default"/>
+    <package name="dracut"/>
+
+    <!-- Networking -->
+    <package name="NetworkManager"/>
+    <package name="firewalld"/>
+
+    <!-- Security -->
+    <package name="apparmor-parser"/>
+
+    <!-- Btrfs and Snapper -->
+    <package name="snapper"/>
+    <package name="btrfsprogs"/>
+
+    <!-- Flatpak -->
+    <package name="flatpak"/>
+
+    <!-- KDE Plasma Desktop -->
+    <package name="patterns-kde-kde_plasma"/>
+    <package name="plasma5-desktop"/>
+    <package name="plasma5-workspace"/>
+    <package name="sddm"/>
+
+    <!-- KDE Applications -->
+    <package name="dolphin"/>
+    <package name="konsole"/>
+    <package name="kate"/>
+    <package name="gwenview"/>
+    <package name="okular"/>
+    <package name="ark"/>
+    <package name="spectacle"/>
+
+    <!-- KDE System Integration -->
+    <package name="plasma-nm"/>
+    <package name="plasma-pa"/>
+    <package name="kscreen"/>
+    <package name="powerdevil"/>
+    <package name="kwalletmanager"/>
+    <package name="bluedevil5"/>
+
+    <!-- Shell and CLI Tools -->
+    <package name="bash-completion"/>
+    <package name="zsh"/>
+    <package name="zsh-completions"/>
+    <package name="curl"/>
+    <package name="vim"/>
+
+    <!-- Fonts -->
+    <package name="liberation-fonts"/>
+    <package name="dejavu-fonts"/>
+    <package name="noto-sans-fonts"/>
+    <package name="noto-emoji-fonts"/>
+    <package name="fontconfig"/>
+
     <!-- Kvantum Qt theme engine for JuxTheme -->
-    <package>kvantum-qt5</package>
-    <package>kvantum-qt6</package>
+    <package name="kvantum-qt5"/>
+    <package name="kvantum-qt6"/>
+
     <!-- Email Client -->
-    <package>MozillaThunderbird</package>
-    <package>MozillaThunderbird-translations-common</package>
+    <package name="MozillaThunderbird"/>
+    <package name="MozillaThunderbird-translations-common"/>
+
     <!-- Laptop Power Management -->
-    <package>tlp</package>
-    <package>tlp-rdw</package>
-    <package>thermald</package>
-    <package>upower</package>
-    <package>acpid</package>
+    <package name="tlp"/>
+    <package name="tlp-rdw"/>
+    <package name="thermald"/>
+    <package name="upower"/>
+    <package name="acpid"/>
+
     <!-- WiFi and Bluetooth Firmware -->
-    <package>kernel-firmware-all</package>
-    <package>bluez</package>
-    <package>bluez-firmware</package>
+    <package name="kernel-firmware-all"/>
+    <package name="bluez"/>
+    <package name="bluez-firmware"/>
+
     <!-- NVIDIA Hybrid Graphics (Optimus) Support -->
-    <package>suse-prime</package>
-    <package>plasma5-applet-suse-prime</package>
+    <package name="suse-prime"/>
+    <package name="plasma5-applet-suse-prime"/>
+
     <!-- Audio Stack (PipeWire for modern openSUSE) -->
-    <package>pipewire</package>
-    <package>pipewire-pulseaudio</package>
-    <package>pipewire-alsa</package>
-    <package>wireplumber</package>
+    <package name="pipewire"/>
+    <package name="pipewire-pulseaudio"/>
+    <package name="pipewire-alsa"/>
+    <package name="wireplumber"/>
   </packages>
 
   <!-- Docker is installed post-deployment via scripts/setup-docker.sh to ensure proper daemon configuration -->
+  <!-- First-boot scripts and overlays are handled via root/ directory and config.sh -->
 
-  <files>
-    <file name="/usr/local/sbin/firstboot-nvidia.sh" mode="0755">scripts/firstboot-nvidia.sh</file>
-    <file name="/usr/local/sbin/firstboot-nix.sh" mode="0755">scripts/firstboot-nix.sh</file>
-  <file name="/usr/local/sbin/firstboot-ssh-hardening.sh" mode="0755">scripts/firstboot-ssh-hardening.sh</file>
-    <file name="/etc/systemd/system/geckoforge-firstboot.service" mode="0644">root/etc/systemd/system/geckoforge-firstboot.service</file>
-    <file name="/etc/systemd/system/geckoforge-nix.service" mode="0644">root/etc/systemd/system/geckoforge-nix.service</file>
-  <file name="/etc/systemd/system/geckoforge-ssh-hardening.service" mode="0644">root/etc/systemd/system/geckoforge-ssh-hardening.service</file>
-    <file name="/etc/systemd/system/multi-user.target.wants/geckoforge-firstboot.service" mode="0644">root/etc/systemd/system/multi-user.target.wants/geckoforge-firstboot.service</file>
-    <file name="/etc/systemd/system/multi-user.target.wants/geckoforge-nix.service" mode="0644">root/etc/systemd/system/multi-user.target.wants/geckoforge-nix.service</file>
-  <file name="/etc/systemd/system/multi-user.target.wants/geckoforge-ssh-hardening.service" mode="0644">root/etc/systemd/system/multi-user.target.wants/geckoforge-ssh-hardening.service</file>
-    <file name="/etc/zypp/repos.d/nvidia.repo" mode="0644">root/etc/zypp/repos.d/nvidia.repo</file>
-    <file name="/etc/snapper/configs/root" mode="0644">root/etc/snapper/configs/root</file>
-    <file name="/etc/firefox/policies/policies.json" mode="0644">root/etc/firefox/policies/policies.json</file>
-    <!-- Mystical Blue (Jux) Theme Files -->
-    <archive name="/usr/share/aurorae/themes/JuxDeco" target="/" mode="0755">root/usr/share/aurorae/themes/JuxDeco</archive>
-    <archive name="/usr/share/plasma/desktoptheme/JuxPlasma" target="/" mode="0755">root/usr/share/plasma/desktoptheme/JuxPlasma</archive>
-    <archive name="/usr/share/Kvantum/NoMansSkyJux" target="/" mode="0755">root/usr/share/Kvantum/NoMansSkyJux</archive>
-    <file name="/usr/share/color-schemes/JuxTheme.colors" mode="0644">root/usr/share/color-schemes/JuxTheme.colors</file>
-  </files>
 </image>
