@@ -9,19 +9,20 @@ echo "🔍 Checking for anti-patterns..."
 
 errors=0
 
-# Files to exclude (documentation about anti-patterns)
-EXCLUDE_PATTERN="\.github/instructions/\|\.github/skills/\|check-anti-patterns\.sh\|docs/research/\|docs/summaries/"
+# Files to exclude (documentation about anti-patterns, policy files, daily summaries)
+EXCLUDE_PATTERN="\.github/instructions/\|\.github/skills/\|check-anti-patterns\.sh\|opa-check\.sh\|docs/research/\|docs/summaries/\|docs/daily-summaries/\|docs/opa-integration\.md\|policies/opa/"
 
 # Get staged or all files
 if [ "${1:-}" = "--all" ]; then
   files=$(find . -type f \( -name "*.sh" -o -name "*.nix" -o -name "*.md" -o -name "*.xml" \) \
-    -not -path "./.git/*" -not -path "./out/*" -not -path "./.github/instructions/*" -not -path "./.github/skills/*")
+    -not -path "./.git/*" -not -path "./out/*" -not -path "./.github/instructions/*" -not -path "./.github/skills/*" \
+    -not -path "./policies/*" -not -path "./docs/daily-summaries/*" -not -name "opa-integration.md")
 else
   files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(sh|nix|md|xml)$' | grep -v "$EXCLUDE_PATTERN" || true)
 fi
 
 if [ -z "$files" ]; then
-  echo "✅ No files to check (instruction/skill files excluded)"
+  echo "✅ No files to check (instruction/skill/policy files excluded)"
   exit 0
 fi
 

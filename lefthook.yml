@@ -1,6 +1,7 @@
 # @file lefthook.yml
 # @description Git hooks configuration for geckoforge quality gates
 # @update-policy Update when adding new validation rules or checks
+# @version 0.4.1 - Added OPA policy checks
 
 pre-commit:
   parallel: true
@@ -58,6 +59,10 @@ pre-commit:
       glob: "**/*.{sh,nix,md,xml}"
       run: tools/check-anti-patterns.sh
     
+    opa-policy:
+      glob: "**/*.{sh,nix,xml,service}"
+      run: tools/opa-check.sh --staged
+    
     executable-check:
       glob: "scripts/**/*.sh"
       run: |
@@ -72,6 +77,9 @@ pre-commit:
 pre-push:
   parallel: false
   commands:
+    opa-full-check:
+      run: tools/opa-check.sh --all
+    
     validate-layers:
       run: tools/check-layer-assignments.sh
     
@@ -83,5 +91,5 @@ pre-push:
         
         if [ ! -f "$summary" ]; then
           echo "⚠️  Consider creating daily summary: $summary"
-          echo "💡 Use: docs/templates/daily-summary-template.md"
+          echo "💡 Create with: touch $summary"
         fi
