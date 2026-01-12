@@ -1,11 +1,32 @@
 # GitHub Copilot Instructions — Global Baseline
 
-> Updated 2025-10-11 01:33:12.  
+> Updated 2026-01-12.  
 > This file is intentionally **short**. Detailed, area‑specific guidance lives in **`.github/instructions/*.instructions.md`** with `applyTo:` globs. Copilot should prefer the most specific applicable instructions.
+
+## Quick Reference: Critical Rules
+
+### KIWI NG Configuration
+- Config file MUST be named `config.xml` (NOT `config.kiwi.xml`)
+- Package elements MUST use `<package name="..."/>` (NOT text content)
+- `<description>` MUST include `<contact>` element
+- Do NOT use `<files>` element (use `root/` overlay directory instead)
+- Do NOT use `hybrid` attribute on ISO type (use `mediacheck` instead)
+
+### Container Runtime
+- Use Docker ONLY (NO Podman, NO CDI syntax)
+- GPU access: `docker run --gpus all` (NOT `--device nvidia.com/gpu=`)
+
+### TeX Live
+- Use `scheme-medium` ONLY (NOT `scheme-full`)
+
+### Build Environment
+- Build on native openSUSE VM (NOT Docker on VMware Fusion)
+- For x86_64 ISO from ARM64 host: use `kiwi-ng system boxbuild --x86_64`
 
 ## Scope & Precedence
 - Use **path‑scoped instruction files** when present (they reflect the source `.cursor/rules/*` verbatim).  
 - This global file covers only cross‑cutting norms that apply everywhere.
+- **Skills** in `.github/skills/` provide task-specific guidance (schema validation, driver installation, etc.)
 
 ## Cross‑Cutting Norms
 1. **Security & Secrets**

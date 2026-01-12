@@ -5,13 +5,23 @@ applyTo: "**"
 ---
 description: Universal prohibitions and non-negotiable standards for geckoforge
 alwaysApply: true
-version: 0.3.0
+version: 0.4.0
 ---
 
 ## Role & Intent
 These rules are **source-of-truth architecture guidance** for the geckoforge KIWI image builder project. Violations indicate hallucinations or misunderstandings about the project structure.
 
 ## Zero-Tolerance Anti-Patterns
+
+### KIWI Schema Violations
+- Naming config file `config.kiwi.xml` instead of `config.xml`
+- Using text content in package elements: `<package>name</package>`
+- Omitting `<contact>` element in `<description>`
+- Using deprecated `<files>` element
+- Using deprecated `hybrid` attribute on ISO type
+- Using package elements without `name` attribute
+
+**Required**: Use `config.xml`, `<package name="..."/>`, include `<contact>`, use `root/` overlay
 
 ### Container Runtime Violations
 - Using Podman commands, flags, or CDI syntax anywhere in the codebase
@@ -46,9 +56,10 @@ These rules are **source-of-truth architecture guidance** for the geckoforge KIW
 
 ### Path and File Violations
 - Creating scripts outside `scripts/` directory
-- Placing KIWI profiles outside `profiles/leap-15.6/`
+- Placing KIWI profiles outside `profile/`
 - Creating documentation outside `docs/` directory
-- Using incorrect file paths in config.kiwi.xml
+- Using incorrect file names in KIWI config (config.kiwi.xml instead of config.xml)
+- Using files instead of symlinks in `multi-user.target.wants/`
 
 **Required**: Follow established directory structure (see 05-project-overview.instructions.md)
 
@@ -74,9 +85,10 @@ These rules are **source-of-truth architecture guidance** for the geckoforge KIW
 
 ### KIWI Configuration
 - Profile: `profile/`
-- Config: `config.kiwi.xml`
-- Scripts: `scripts/` subdirectory
+- Config: `config.xml` (NOT `config.kiwi.xml`)
+- Post-prepare script: `config.sh`
 - Root overlay: `root/` subdirectory
+- First-boot scripts: `root/usr/local/sbin/`
 
 ## Mandatory Verifications
 

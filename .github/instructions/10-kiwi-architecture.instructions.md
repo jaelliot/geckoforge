@@ -1,5 +1,5 @@
 ---
-applyTo: profile/**,tools/**,scripts/**,**/*.kiwi.xml
+applyTo: profile/**,tools/**,scripts/**,**/config.xml
 ---
 
 ---
@@ -28,21 +28,23 @@ version: 0.3.0
 - Essential system utilities
 
 #### Files:
-- `config.kiwi.xml` - Package lists, repos, file inclusions
-- `root/` - Files to overlay onto ISO (`/etc/`, `/usr/local/sbin/`)
-- `scripts/` - Scripts copied into ISO for first-boot execution
+- `config.xml` - Main KIWI image description (NOT config.kiwi.xml)
+- `config.sh` - Post-prepare configuration script (sets permissions, enables services)
+- `root/` - Overlay directory - files copied to image at same path
+- `scripts/` - Source scripts (DEPRECATED - use root/usr/local/sbin/ instead)
 
 #### What belongs here:
 ```xml
-<!-- System packages -->
-<package>kernel-default</package>
-<package>plasma5-desktop</package>
-<package>nvidia-open-driver-G06-signed</package>
+<!-- KIWI NG v10+ requires name attribute, NOT text content -->
+<packages type="image">
+  <package name="kernel-default"/>
+  <package name="plasma5-desktop"/>
+  <package name="patterns-kde-kde_plasma"/>
+</packages>
 
-<!-- File overlays -->
-<file name="/etc/zypp/repos.d/nvidia.repo" mode="0644">
-  root/etc/zypp/repos.d/nvidia.repo
-</file>
+<!-- File overlays go in root/ directory, NOT <files> element -->
+<!-- Place files at: profile/root/etc/zypp/repos.d/nvidia.repo -->
+<!-- They will be copied to /etc/zypp/repos.d/nvidia.repo in image -->
 ```
 
 #### What does NOT belong here:
@@ -202,15 +204,19 @@ Layer 4 → Layer 2
 ```bash
 # 1. Make changes to profile
 cd geckoforge/
-$EDITOR profile/config.kiwi.xml
+$EDITOR profile/config.xml      # NOT config.kiwi.xml!
+$EDITOR profile/config.sh        # Post-prepare script
 
-# 2. Build ISO
+# 2. Validate schema before building
+kiwi-ng system validate --description profile/
+
+# 3. Build ISO (runs on openSUSE VM, not Docker)
 ./tools/kiwi-build.sh profile
 
-# 3. ISO appears in out/
+# 4. ISO appears in out/
 ls out/*.iso
 
-# 4. Test in VM
+# 5. Test in VM
 ./tools/test-iso.sh out/geckoforge-*.iso
 ```
 
@@ -227,8 +233,9 @@ ls out/*.iso
 ### Required Structure:
 ```
 profile/
-├── config.kiwi.xml              # Main KIWI configuration
-├── root/                        # File overlays
+├── config.xml                   # Main KIWI configuration (NOT .kiwi.xml!)
+├── config.sh                    # Post-prepare script (chmod, systemctl enable)
+├── root/                        # File overlays (auto-copied to image)
 │   ├── etc/
 │   │   ├── snapper/configs/root
 │   │   ├── systemd/system/
