@@ -238,6 +238,48 @@ in
           "css.validate" = false;
           "html.validate.scripts" = false;
           "json.validate.enable" = true;
+          
+          # === Python Configuration (Nix-based workflow) ===
+          
+          # Python interpreter path (uses project-local .venv)
+          "python.defaultInterpreterPath" = "\${workspaceFolder}/.venv/bin/python";
+          
+          # Virtual environment settings
+          "python.venvPath" = ".";  # Look for .venv in workspace root
+          "python.terminal.activateEnvironment" = false;  # direnv handles activation
+          
+          # Testing configuration
+          "python.testing.pytestEnabled" = true;
+          "python.testing.unittestEnabled" = false;
+          "python.testing.pytestArgs" = [
+            "tests"
+            "-v"
+            "--tb=short"
+          ];
+          
+          # Type checking (mypy)
+          "python.linting.enabled" = true;
+          "python.linting.mypyEnabled" = true;
+          "python.linting.mypyArgs" = [
+            "--config-file=mypy.ini"
+          ];
+          
+          # Formatting (disabled - manual only)
+          "python.formatting.provider" = "none";
+          
+          # Language server
+          "python.languageServer" = "Pylance";
+          
+          # Disable Python extension telemetry
+          "python.experiments.enabled" = false;
+          
+          # Per-language settings
+          "[python]" = {
+            "editor.formatOnSave" = false;  # Manual format only
+            "editor.tabSize" = 4;
+            "editor.insertSpaces" = true;
+            "editor.rulers" = [ 88 120 ];  # PEP 8 (88 for Black, 120 max)
+          };
         }
         
         # Elixir-specific settings - Performance Optimized

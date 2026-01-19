@@ -6,7 +6,48 @@ After Phase 1 & 2 consolidation, these features are now configured in `home.nix`
 
 ---
 
-### 1. Power Management (`power.nix`)
+### 1. Python Development (`development.nix`)
+
+**Nix-based Python workflow with direnv:**
+
+geckoforge uses a **hybrid approach** for Python development:
+- **Nix provides**: Python 3.14.2, cryptographic libraries (libsodium, blake3), build tools
+- **pip manages**: Python packages in project-local `.venv`
+- **direnv automates**: Environment activation when entering project directories
+
+**Quick Start:**
+
+```bash
+# Copy the template
+cp -r ~/git/geckoforge/examples/python-nix-direnv my-project
+cd my-project
+
+# Allow direnv
+direnv allow
+
+# Environment auto-activates with Python 3.14.2 + KERI libraries
+python --version
+pip list
+```
+
+**Features:**
+- Reproducible Python environments across machines
+- Automatic activation via direnv (no manual `source venv/bin/activate`)
+- VS Code integration (auto-detects `.venv/bin/python`)
+- pytest with async support, coverage reporting
+- mypy type checking
+- KERI cryptographic libraries pre-configured
+
+**Documentation:**
+- **Generic Python**: [Python Development Guide](python-development.md)
+- **KERI Projects**: [KERI Development Guide](keri-development.md)
+- **Example Template**: `examples/python-nix-direnv/`
+
+**Configuration:** Already enabled in [home/modules/development.nix](../home/modules/development.nix) - no changes needed.
+
+---
+
+### 2. Power Management (`power.nix`)
 
 **Enable laptop power optimization:**
 

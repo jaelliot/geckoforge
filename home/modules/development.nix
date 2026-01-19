@@ -23,11 +23,11 @@
     go_1_24
 
     # Python
-    # Using Python 3.12 - modern features (match statements, typing improvements)
-    python312
-    python312Packages.pip
-    python312Packages.virtualenv
-    python312Packages.poetry
+    # Using Python 3.14.2 - latest stable with modern features
+    python314
+    python314Packages.pip
+    python314Packages.virtualenv
+    python314Packages.poetry
 
     # Nim
     # Latest stable Nim compiler
@@ -75,6 +75,34 @@
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+    
+    # === Nix-based Python Development with direnv ===
+    #
+    # direnv automatically loads project-specific environments when you cd into a directory.
+    # For Python projects, we recommend using Nix flakes with the hybrid approach:
+    # - Nix provides system dependencies (Python, libsodium, build tools)
+    # - pip/venv manages Python packages (installed in .venv)
+    #
+    # Quick Start:
+    # 1. Create .envrc in your project root:
+    #      use flake
+    #
+    # 2. Create flake.nix (see examples/python-nix-direnv/flake.nix)
+    #
+    # 3. Allow direnv:
+    #      direnv allow
+    #
+    # The environment activates automatically when you enter the directory.
+    # Your shell prompt shows "direnv" when active.
+    #
+    # For detailed documentation:
+    # - Generic Python workflow: docs/python-development.md
+    # - KERI development: docs/keri-development.md
+    # - Example template: examples/python-nix-direnv/
+    #
+    # Legacy alternatives (not recommended):
+    # - poetry: Add "layout poetry" to .envrc
+    # - virtualenv: Add "layout python python3.14" to .envrc
   };
 
   # Session variables for development environment
@@ -96,6 +124,9 @@
     # Python
     PYTHONDONTWRITEBYTECODE = "1";  # Don't create .pyc files
     PIP_CACHE_DIR = "${config.home.homeDirectory}/.cache/pip";
+    
+    # direnv (reduce log noise)
+    DIRENV_LOG_FORMAT = "";
     
     # Node.js
     NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
